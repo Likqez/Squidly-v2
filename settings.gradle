@@ -1,0 +1,4 @@
+rootProject.name = 'Squidly-v2'
+include 'backend'
+include 'discord'
+

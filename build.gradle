@@ -1,0 +1,18 @@
+subprojects {
+    apply plugin: 'java'
+
+    group 'team.dotspace.squidly'
+    version '1.0-SNAPSHOT'
+
+    compileJava.options.encoding = "UTF-8"
+    compileTestJava.options.encoding = "UTF-8"
+
+    repositories {
+        mavenCentral()
+        //Discord JDA
+        maven {
+            name 'm2-dv8tion'
+            url 'https://m2.dv8tion.net/releases'
+        }
+    }
+}
