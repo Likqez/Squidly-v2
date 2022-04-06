@@ -1,16 +1,22 @@
 package dev.dotspace.squidly.session;
 
-import java.util.ServiceLoader;
+import dev.dotspace.squidly.CredentialPair;
 
-public class SessionProvider implements ServiceLoader.Provider<String> {
+public class SessionProvider {
 
-  @Override
-  public Class<? extends String> type() {
-    return String.class;
+  private final CredentialPair credentialPair;
+
+  public SessionProvider() {
+    this.credentialPair = CredentialPair.load();
   }
 
-  @Override
-  public String get() {
+  public SessionProvider(CredentialPair credentialPair) {
+    this.credentialPair = credentialPair;
+  }
+
+  public String get(String command) {
+    SignatureFactory.getSignature(credentialPair, command);
+
     return null;
   }
 }
