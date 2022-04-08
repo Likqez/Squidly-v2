@@ -17,14 +17,14 @@ public class HttpRequestFactory {
 
   private final List<String> headers = new ArrayList<>();
 
-  private final URI uri;
+  private String uri;
 
   public HttpRequestFactory(String uri) {
-    this.uri = URI.create(uri);
+    this.uri = uri;
     this.httpClient = DEFAULT_CLIENT;
   }
 
-  public HttpRequestFactory(URI uri, HttpClient httpClient) {
+  public HttpRequestFactory(String uri, HttpClient httpClient) {
     this.uri = uri;
     this.httpClient = httpClient;
   }
@@ -40,9 +40,21 @@ public class HttpRequestFactory {
     return this;
   }
 
+  public HttpRequestFactory addPath(String path) {
+    if (!this.uri.endsWith("/")) this.uri += "/";
+    this.uri += path;
+    return this;
+  }
+
+  public HttpRequestFactory setPath(String path) {
+    var t = uri.split("/");
+    this.uri = t[0] + "//" + t[2] + "/" + path;
+    return this;
+  }
+
   public CompletableFuture<HttpResponse<String>> asyncGET() {
-    var req = HttpRequest.newBuilder(this.uri)
-        .headers(this.headers.toArray(new String[0]))
+    var req = HttpRequest.newBuilder(URI.create(this.uri))
+        //.headers(this.headers.toArray(new String[0]))
         .build();
 
     return this.httpClient.sendAsync(req, HttpResponse.BodyHandlers.ofString());

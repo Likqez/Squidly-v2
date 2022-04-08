@@ -18,7 +18,7 @@ class SignatureFactory {
     return DigestUtils.md5Hex(s).toLowerCase();
   }
 
-  private static String getTimestamp() {
+  public static String getTimestamp() {
     var time = ZonedDateTime.now(ZoneId.of("UTC"));
     return DateTimeFormatter.ofPattern("yyyyMMddHHmmss").format(time);
   }
