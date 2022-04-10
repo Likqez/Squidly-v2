@@ -3,13 +3,11 @@ package dev.dotspace.squidly.session;
 import dev.dotspace.squidly.APIEndpoint;
 import dev.dotspace.squidly.CredentialPair;
 import dev.dotspace.squidly.HttpRequestFactory;
-
-import java.net.http.HttpResponse;
+import dev.dotspace.squidly.session.SessionStorage.SessionStore;
 
 public class SessionProvider {
 
   private final CredentialPair credentialPair;
-  private String activeSession = "";
   private final APIEndpoint apiEndpoint;
 
   public SessionProvider() {
@@ -22,14 +20,17 @@ public class SessionProvider {
     this.apiEndpoint = apiEndpoint;
   }
 
-  public String get() {
-    if (activeSession.isEmpty())
-      this.activeSession = retrieveNewSession(this.apiEndpoint);
+  public SessionStore get() {
+    if (SessionStorage.getActiveSession().isEmpty()) {
+      var newSession = retrieveNewSession(this.apiEndpoint);
+      SessionStorage.setActiveSession(newSession);
+      return newSession;
+    }
 
-    return this.activeSession;
+    return SessionStorage.getActiveSession().get();
   }
 
-  private String retrieveNewSession(APIEndpoint endpoint) {
+  private SessionStore retrieveNewSession(APIEndpoint endpoint) {
     var res = new HttpRequestFactory(endpoint.url())
         .addPath("createsessionjson")
         .addPath(credentialPair.devId())
@@ -37,8 +38,8 @@ public class SessionProvider {
         .addPath(SignatureFactory.getTimestamp())
         .asyncGET();
 
-    res.thenAccept((response) -> System.out.println(response));
+    res.thenAccept(System.out::println);
 
-    return "test";
+    return null;
   }
 }
