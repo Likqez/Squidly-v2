@@ -1,6 +1,6 @@
 package dev.dotspace.squidly.session;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 import java.util.Optional;
 
 public class SessionStorage {
@@ -15,5 +15,5 @@ public class SessionStorage {
     SessionStorage.activeSession = activeSession;
   }
 
-  public record SessionStore(String session, Date creation, Date expiry) { }
+  public record SessionStore(String session, ZonedDateTime creation, ZonedDateTime expiry) {}
 }
