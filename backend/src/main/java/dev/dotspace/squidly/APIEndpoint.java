@@ -1,9 +1,8 @@
 package dev.dotspace.squidly;
 
 public enum APIEndpoint {
-  PALADINS("https://api.paladins.com/paladinsapi.svc"),
-  SMITE("https://api.smitegame.com/smiteapi.svc"),
-  REALM_ROYAL("");
+  PALADINS("https://api.paladins.com/paladinsapi.svc")
+  ;
 
   private final String url;
 

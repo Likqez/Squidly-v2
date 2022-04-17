@@ -20,6 +20,11 @@ public class HttpRequestFactory {
   private final String uri;
   private String path = "";
 
+  public HttpRequestFactory(APIEndpoint endpoint) {
+    this.uri = endpoint.url();
+    this.httpClient = DEFAULT_CLIENT;
+  }
+
   public HttpRequestFactory(String uri) {
     this.uri = uri;
     this.httpClient = DEFAULT_CLIENT;

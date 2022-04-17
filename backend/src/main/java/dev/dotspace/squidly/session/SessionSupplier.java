@@ -5,16 +5,13 @@ import com.google.gson.JsonParser;
 import dev.dotspace.squidly.APIEndpoint;
 import dev.dotspace.squidly.CredentialPair;
 import dev.dotspace.squidly.HttpRequestFactory;
+import dev.dotspace.squidly.response.AnalysisResult;
+import dev.dotspace.squidly.response.SessionResponseAnalyser;
 import dev.dotspace.squidly.session.SessionStorage.SessionStore;
 
 import java.net.http.HttpResponse;
-import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Supplier;
-
-import static dev.dotspace.squidly.JsonResponseAnalyser.RESPONSE_TIME_FORMATTER;
 
 public class SessionSupplier implements Supplier<SessionStore> {
 
@@ -33,13 +30,13 @@ public class SessionSupplier implements Supplier<SessionStore> {
 
   public SessionStore get() {
     if (SessionStorage.getActiveSession().isEmpty())
-      retrieveNewSession(this.apiEndpoint).ifPresent(SessionStorage::setActiveSession);
+      retrieveNewSession(this.apiEndpoint).value().ifPresent(SessionStorage::setActiveSession);
 
     return SessionStorage.getActiveSession().orElse(null);
   }
 
-  private Optional<SessionStore> retrieveNewSession(APIEndpoint endpoint) {
-    var res = new HttpRequestFactory(endpoint.url())
+  private AnalysisResult<SessionStore> retrieveNewSession(APIEndpoint endpoint) {
+    var res = new HttpRequestFactory(endpoint)
         .addPath("createsessionjson")
         .addPath(credentialPair.devId())
         .addPath(SignatureFactory.getSignature(credentialPair, "createsession"))
@@ -47,32 +44,16 @@ public class SessionSupplier implements Supplier<SessionStore> {
         .asyncGET();
 
     try {
-      return Optional.ofNullable(
-          res
-              .thenApplyAsync(HttpResponse::body)
-              .thenApplyAsync(JsonParser::parseString)
-              .thenApplyAsync(JsonElement::getAsJsonObject)
-              .thenApplyAsync(jsonObject -> {
+      return res.thenApplyAsync(HttpResponse::body)
+          .thenApplyAsync(JsonParser::parseString)
+          .thenApplyAsync(JsonElement::getAsJsonObject)
+          .thenApplyAsync(jsonObject -> new SessionResponseAnalyser().analyse(jsonObject))
+          .get();
 
-                if (!jsonObject.has("session_id"))
-                  return null;
-
-                var creationTime = ZonedDateTime.parse(jsonObject.get("timestamp").getAsString(), RESPONSE_TIME_FORMATTER);
-                var invalidationTime = creationTime.plus(15, ChronoUnit.MINUTES);
-                var session = jsonObject.get("session_id").getAsString();
-
-                if (session.isEmpty() || session.isBlank()) {
-                  System.err.println(jsonObject.get("ret_msg").getAsString());
-                  return null;
-                }
-
-                return new SessionStore(session, creationTime, invalidationTime);
-              }).get()
-      );
     } catch (InterruptedException | ExecutionException e) {
       e.printStackTrace();
     }
-    return Optional.empty();
+    return null;
   }
 
   public CredentialPair getCredentialPair() {
