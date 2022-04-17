@@ -17,7 +17,8 @@ public class HttpRequestFactory {
 
   private final List<String> headers = new ArrayList<>();
 
-  private String uri;
+  private final String uri;
+  private String path = "";
 
   public HttpRequestFactory(String uri) {
     this.uri = uri;
@@ -41,19 +42,22 @@ public class HttpRequestFactory {
   }
 
   public HttpRequestFactory addPath(String path) {
-    if (!this.uri.endsWith("/")) this.uri += "/";
-    this.uri += path;
+    if (!this.path.endsWith("/")) this.path += "/";
+    this.path += path;
     return this;
   }
 
   public HttpRequestFactory setPath(String path) {
-    var t = uri.split("/");
-    this.uri = t[0] + "//" + t[2] + "/" + path;
+    this.path = "/" + path;
     return this;
   }
 
+  public String getFullUri() {
+    return uri.concat(path);
+  }
+
   public CompletableFuture<HttpResponse<String>> asyncGET() {
-    var req = HttpRequest.newBuilder(URI.create(this.uri))
+    var req = HttpRequest.newBuilder(URI.create(this.getFullUri()))
         //.headers(this.headers.toArray(new String[0]))
         .build();
 
