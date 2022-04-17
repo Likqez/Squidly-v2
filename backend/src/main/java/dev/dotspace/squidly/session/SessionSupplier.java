@@ -6,7 +6,7 @@ import dev.dotspace.squidly.APIEndpoint;
 import dev.dotspace.squidly.CredentialPair;
 import dev.dotspace.squidly.HttpRequestFactory;
 import dev.dotspace.squidly.response.AnalysisResult;
-import dev.dotspace.squidly.response.SessionResponseAnalyser;
+import dev.dotspace.squidly.response.SessionResponseAnalyzer;
 import dev.dotspace.squidly.session.SessionStorage.SessionStore;
 
 import java.net.http.HttpResponse;
@@ -47,7 +47,7 @@ public class SessionSupplier implements Supplier<SessionStore> {
       return res.thenApplyAsync(HttpResponse::body)
           .thenApplyAsync(JsonParser::parseString)
           .thenApplyAsync(JsonElement::getAsJsonObject)
-          .thenApplyAsync(jsonObject -> new SessionResponseAnalyser().analyse(jsonObject))
+          .thenApplyAsync(jsonObject -> new SessionResponseAnalyzer().analyse(jsonObject))
           .get();
 
     } catch (InterruptedException | ExecutionException e) {

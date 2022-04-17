@@ -6,7 +6,7 @@ import dev.dotspace.squidly.session.SessionStorage.SessionStore;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 
-public class SessionResponseAnalyser implements JsonResponseAnalyser {
+public class SessionResponseAnalyzer implements JsonResponseAnalyzer {
 
   @Override
   public AnalysisResult<SessionStore> analyse(JsonObject jsonObject) {
