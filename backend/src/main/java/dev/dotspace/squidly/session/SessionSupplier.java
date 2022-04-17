@@ -35,7 +35,7 @@ public class SessionSupplier implements Supplier<SessionStore> {
     if (SessionStorage.getActiveSession().isEmpty())
       retrieveNewSession(this.apiEndpoint).ifPresent(SessionStorage::setActiveSession);
 
-    return SessionStorage.getActiveSession().get();
+    return SessionStorage.getActiveSession().orElse(null);
   }
 
   private Optional<SessionStore> retrieveNewSession(APIEndpoint endpoint) {
@@ -47,23 +47,35 @@ public class SessionSupplier implements Supplier<SessionStore> {
         .asyncGET();
 
     try {
-      return res
-          //.exceptionally(JsonResponseAnalyser)
-          .thenApplyAsync(HttpResponse::body)
-          .thenApplyAsync(JsonParser::parseString)
-          .thenApplyAsync(JsonElement::getAsJsonObject)
-          .thenApplyAsync(jsonObject -> {
+      return Optional.ofNullable(
+          res
+              .thenApplyAsync(HttpResponse::body)
+              .thenApplyAsync(JsonParser::parseString)
+              .thenApplyAsync(JsonElement::getAsJsonObject)
+              .thenApplyAsync(jsonObject -> {
 
-            var creationTime = ZonedDateTime.parse(jsonObject.get("timestamp").getAsString(), RESPONSE_TIME_FORMATTER);
-            var invalidationTime = creationTime.plus(15, ChronoUnit.MINUTES);
-            var session = jsonObject.get("session_id").getAsString();
+                if (!jsonObject.has("session_id"))
+                  return null;
 
-            return Optional.of(new SessionStore(session, creationTime, invalidationTime));
-          })
-          .get();
+                var creationTime = ZonedDateTime.parse(jsonObject.get("timestamp").getAsString(), RESPONSE_TIME_FORMATTER);
+                var invalidationTime = creationTime.plus(15, ChronoUnit.MINUTES);
+                var session = jsonObject.get("session_id").getAsString();
+
+                if (session.isEmpty() || session.isBlank()) {
+                  System.err.println(jsonObject.get("ret_msg").getAsString());
+                  return null;
+                }
+
+                return new SessionStore(session, creationTime, invalidationTime);
+              }).get()
+      );
     } catch (InterruptedException | ExecutionException e) {
       e.printStackTrace();
     }
     return Optional.empty();
+  }
+
+  public CredentialPair getCredentialPair() {
+    return credentialPair;
   }
 }
