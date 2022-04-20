@@ -14,12 +14,13 @@ public class SessionResponseAnalyzer implements JsonResponseAnalyzer {
 
     success = jsonObject.has("session_id");
 
-    var creationTime = ZonedDateTime.parse(jsonObject.get("timestamp").getAsString(), RESPONSE_TIME_FORMATTER);
-    var invalidationTime = creationTime.plus(15, ChronoUnit.MINUTES);
-    var session = jsonObject.get("session_id").getAsString();
+    var creationTime = jsonObject.has("timestamp") ? ZonedDateTime.parse(jsonObject.get("timestamp").getAsString(), RESPONSE_TIME_FORMATTER) : null;
+
+    var invalidationTime = jsonObject.has("timestamp") ? creationTime.plus(15, ChronoUnit.MINUTES) : null;
+    var session = success ? jsonObject.get("session_id").getAsString() : "";
 
     if (success && (session.isEmpty() || session.isBlank())) {
-      System.err.println(jsonObject.get("ret_msg").getAsString());
+      System.err.println(jsonObject);
       success = false;
     }
 
