@@ -1,13 +1,12 @@
-package dev.dotspace.squidly;
+package dev.dotspace.squidly.session;
 
 import com.google.gson.JsonParser;
 import dev.dotspace.squidly.response.SessionResponseAnalyzer;
-import dev.dotspace.squidly.session.SessionStorage;
-import dev.dotspace.squidly.session.SessionSupplier;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SessionTests {
 

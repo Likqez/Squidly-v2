@@ -4,7 +4,7 @@ import java.util.Optional;
 
 public final class AnalysisResult<T> {
   private final Optional<T> value;
-  private String msg;
+  private final String msg;
 
   public AnalysisResult(T value, String msg, boolean success) {
     if (success)

@@ -1,7 +1,7 @@
 package dev.dotspace.squidly.response;
 
 import com.google.gson.JsonObject;
-import dev.dotspace.squidly.session.SessionStorage.SessionStore;
+import dev.dotspace.squidly.session.SessionStore;
 
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;

@@ -1,9 +1,8 @@
 package dev.dotspace.squidly.session;
 
-import java.time.ZonedDateTime;
 import java.util.Optional;
 
-public class SessionStorage {
+class SessionStorage {
 
   private static SessionStore activeSession;
 
@@ -14,6 +13,4 @@ public class SessionStorage {
   public static void setActiveSession(SessionStore activeSession) {
     SessionStorage.activeSession = activeSession;
   }
-
-  public record SessionStore(String session, ZonedDateTime creation, ZonedDateTime expiry) {}
 }
