@@ -31,7 +31,7 @@ public class SessionSupplier implements Supplier<SessionStore> {
   public SessionStore get() {
     if (SessionStorage.getActiveSession().isEmpty() || SessionStorage.getActiveSession().get().expired())
       retrieveNewSession(this.apiEndpoint).value().ifPresent(sessionStore -> {
-        if (RequestManager.testSession())
+        if (RequestManager.testSession(sessionStore))
           SessionStorage.setActiveSession(sessionStore);
         else {
           System.err.println("There was an error receiving a valid session. Trying again.. ");
