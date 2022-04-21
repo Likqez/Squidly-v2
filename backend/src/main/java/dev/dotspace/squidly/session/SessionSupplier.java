@@ -5,6 +5,7 @@ import com.google.gson.JsonParser;
 import dev.dotspace.squidly.APIEndpoint;
 import dev.dotspace.squidly.CredentialPair;
 import dev.dotspace.squidly.HttpRequestFactory;
+import dev.dotspace.squidly.request.RequestManager;
 import dev.dotspace.squidly.response.AnalysisResult;
 import dev.dotspace.squidly.response.SessionResponseAnalyzer;
 
@@ -28,10 +29,14 @@ public class SessionSupplier implements Supplier<SessionStore> {
   }
 
   public SessionStore get() {
-    if (SessionStorage.getActiveSession().isEmpty())
-      retrieveNewSession(this.apiEndpoint).value().ifPresent(SessionStorage::setActiveSession);
+    if (SessionStorage.getActiveSession().isEmpty() || SessionStorage.getActiveSession().get().expired())
+      retrieveNewSession(this.apiEndpoint).value().ifPresent(sessionStore -> {
+        if (RequestManager.testSession())
+          SessionStorage.setActiveSession(sessionStore);
+        else this.get();
+      });
 
-    return SessionStorage.getActiveSession().orElse(null);
+    return SessionStorage.getActiveSession().get();
   }
 
   private AnalysisResult<SessionStore> retrieveNewSession(APIEndpoint endpoint) {

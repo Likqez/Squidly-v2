@@ -7,7 +7,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
-class SignatureFactory {
+public class SignatureFactory {
 
   public static String getSignature(CredentialPair credentialPair, String command) {
     return SignatureFactory.getSignature(credentialPair.devId(), credentialPair.authKey(), command);
