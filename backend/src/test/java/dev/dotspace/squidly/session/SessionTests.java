@@ -34,11 +34,11 @@ public class SessionTests {
 
   @ParameterizedTest(name = "#{index} - with {arguments}")
   @ValueSource(strings = { """
-      {"session_id": "XXXXXASDASD", "ret_msg": "Invalid Signature"}
+      {"session_id": "XXXXXASDASD", "ret_msg": "Invalid Signature", "timestamp": "11/28/2019 3:09:16 PM"}
       """, """
-      {"session_id": "XDASDASDADSD", "ret_msg": "ok"}
+      {"session_id": "XDASDASDADSD", "ret_msg": null, "timestamp": "11/28/2019 3:09:16 PM"}
       """, """
-      {"session_id": "XDASDASDADSD"}
+      {"session_id": "XDASDASDADSD", "ret_msg": "Approved", "timestamp": "11/28/1971 3:09:16 PM"}
       """ })
   public void testWithValidSessionResponse(String jsonObject) {
     var obj = JsonParser.parseString(jsonObject).getAsJsonObject();

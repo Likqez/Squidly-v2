@@ -39,7 +39,7 @@ public class SessionResponseAnalyzer implements JsonResponseAnalyzer {
 
         return new AnalysisResult<>(
             new SessionStore(session, creationTime, invalidationTime),
-            jsonObject.get("ret_msg").getAsString(),
+            jsonObject.get("ret_msg").isJsonNull() ? "null" : jsonObject.get("ret_msg").getAsString(),
             true);
       }
 
