@@ -39,7 +39,7 @@ public class SessionResponseAnalyzer implements JsonResponseAnalyzer {
 
         return new AnalysisResult<>(
             new SessionStore(session, creationTime, invalidationTime),
-            jsonObject.get("ret_msg").isJsonNull() ? "null" : jsonObject.get("ret_msg").getAsString(),
+            jsonObject.get("ret_msg").toString(),
             true);
       }
 
@@ -51,7 +51,7 @@ public class SessionResponseAnalyzer implements JsonResponseAnalyzer {
 
     return new AnalysisResult<>(
         null,
-        jsonObject.has("ret_msg") ? jsonObject.get("ret_msg").getAsString() : "no msg found",
+        jsonObject.has("ret_msg") ? jsonObject.get("ret_msg").toString() : "no msg found",
         false);
   }
 }

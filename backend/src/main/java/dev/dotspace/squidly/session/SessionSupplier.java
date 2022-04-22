@@ -60,7 +60,7 @@ public class SessionSupplier implements Supplier<SessionStore> {
     } catch (InterruptedException | ExecutionException e) {
       e.printStackTrace();
     }
-    return new AnalysisResult<>(null, "internal error", false);
+    return AnalysisResult.ERROR;
   }
 
   public CredentialPair getCredentialPair() {
