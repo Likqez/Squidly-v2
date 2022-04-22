@@ -12,13 +12,14 @@ public class SessionTests {
 
   @ParameterizedTest(name = "#{index} - with {arguments}")
   @ValueSource(strings = { "{}", """
-      {"session_id": "", "ret_msg": "Invalid Signature"}
+      {"session_id": "", "ret_msg": "Invalid Signature", "timestamp": "11/28/2019 3:09:16 PM"}
       """, """
-      {"session_id": " ", "ret_msg": "ok"}
+      {"session_id": " ", "ret_msg": "ok", "timestamp": ""}
+      """, """
+      {"session_id": "XASDDDSAD", "ret_msg": "ok", "timestamp": " "}
       """ })
   public void testWithInvalidSessionResponse(String jsonObject) {
     var obj = JsonParser.parseString(jsonObject).getAsJsonObject();
-
     assertAll(() -> {
       var result = new SessionResponseAnalyzer().analyse(obj);
       assertTrue(result.value().isEmpty());
