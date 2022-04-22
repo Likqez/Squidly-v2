@@ -1,6 +1,6 @@
 package dev.dotspace.squidly;
 
-import org.junit.jupiter.api.Assertions;
+import dev.dotspace.squidly.request.HttpRequestFactory;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 

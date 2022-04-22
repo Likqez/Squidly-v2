@@ -2,7 +2,6 @@ package dev.dotspace.squidly.request;
 
 import com.google.gson.JsonParser;
 import dev.dotspace.squidly.APIEndpoint;
-import dev.dotspace.squidly.HttpRequestFactory;
 import dev.dotspace.squidly.response.AnalysisResult;
 import dev.dotspace.squidly.response.DataUsageResponseAnalyzer;
 import dev.dotspace.squidly.session.SessionStore;

@@ -1,10 +1,9 @@
 package dev.dotspace.squidly.session;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import dev.dotspace.squidly.APIEndpoint;
 import dev.dotspace.squidly.CredentialPair;
-import dev.dotspace.squidly.HttpRequestFactory;
+import dev.dotspace.squidly.request.HttpRequestFactory;
 import dev.dotspace.squidly.request.RequestManager;
 import dev.dotspace.squidly.response.AnalysisResult;
 import dev.dotspace.squidly.response.SessionResponseAnalyzer;
