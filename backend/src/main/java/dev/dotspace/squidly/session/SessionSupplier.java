@@ -53,7 +53,6 @@ public class SessionSupplier implements Supplier<SessionStore> {
     try {
       return res.thenApplyAsync(HttpResponse::body)
           .thenApplyAsync(JsonParser::parseString)
-          .thenApplyAsync(JsonElement::getAsJsonObject)
           .thenApplyAsync(jsonObject -> new SessionResponseAnalyzer().analyse(jsonObject))
           .get();
 

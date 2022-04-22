@@ -1,11 +1,9 @@
 package dev.dotspace.squidly.response;
 
-import com.google.gson.JsonObject;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import com.google.gson.stream.JsonReader;
 import com.qindesign.json.schema.MalformedSchemaException;
 import com.qindesign.json.schema.Validator;
-import com.qindesign.json.schema.net.URI;
 import dev.dotspace.squidly.session.SessionStore;
 
 import java.io.InputStreamReader;
@@ -28,11 +26,13 @@ public class SessionResponseAnalyzer implements JsonResponseAnalyzer {
   }
 
   @Override
-  public AnalysisResult<SessionStore> analyse(JsonObject jsonObject) {
+  public AnalysisResult<SessionStore> analyse(JsonElement jsonElement) {
     try {
-      var success = validator.validate(jsonObject, null, null);
+      var success = validator.validate(jsonElement, null, null);
 
       if (success) {
+        var jsonObject = jsonElement.getAsJsonObject();
+
         var creationTime = ZonedDateTime.parse(jsonObject.get("timestamp").getAsString(), RESPONSE_TIME_FORMATTER);
         var invalidationTime = creationTime.plus(15, ChronoUnit.MINUTES);
         var session = jsonObject.get("session_id").getAsString();
@@ -43,7 +43,7 @@ public class SessionResponseAnalyzer implements JsonResponseAnalyzer {
             true);
       }
 
-      System.err.printf("Could not validate against create-session schema: %s%n", jsonObject);
+      System.err.printf("Could not validate against create-session schema: %s%n", jsonElement);
 
     } catch (MalformedSchemaException e) {
       throw new RuntimeException(e);
@@ -51,7 +51,7 @@ public class SessionResponseAnalyzer implements JsonResponseAnalyzer {
 
     return new AnalysisResult<>(
         null,
-        jsonObject.has("ret_msg") ? jsonObject.get("ret_msg").toString() : "no msg found",
+        "Internal error: malformed schema OR schema validation failed.",
         false);
   }
 }

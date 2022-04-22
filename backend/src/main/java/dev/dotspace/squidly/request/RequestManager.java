@@ -35,7 +35,7 @@ public class RequestManager {
     return false;
   }
 
-  public static void getdataused() {
+  public static AnalysisResult<?> getDataUsed() {
     var ss = new SessionSupplier();
     var credentials = ss.getCredentialPair();
     var sessionStore = ss.get();
