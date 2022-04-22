@@ -10,13 +10,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SessionTests {
 
-  public static void main(String[] args) {
-
-    System.out.println(new SessionSupplier().get());
-    SessionStorage.getActiveSession().ifPresentOrElse(System.out::println, () -> System.out.println("not found"));
-
-  }
-
   @ParameterizedTest(name = "#{index} - with {arguments}")
   @ValueSource(strings = { "{}", """
       {"session_id": "", "ret_msg": "Invalid Signature"}
