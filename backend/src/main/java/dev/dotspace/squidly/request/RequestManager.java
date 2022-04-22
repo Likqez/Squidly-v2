@@ -1,7 +1,10 @@
 package dev.dotspace.squidly.request;
 
+import com.google.gson.JsonParser;
 import dev.dotspace.squidly.APIEndpoint;
 import dev.dotspace.squidly.HttpRequestFactory;
+import dev.dotspace.squidly.response.AnalysisResult;
+import dev.dotspace.squidly.response.DataUsageResponseAnalyzer;
 import dev.dotspace.squidly.session.SessionStore;
 import dev.dotspace.squidly.session.SessionSupplier;
 import dev.dotspace.squidly.session.SignatureFactory;
@@ -49,9 +52,16 @@ public class RequestManager {
         .addPath(SignatureFactory.getTimestamp())
         .asyncGET();
 
-    response
-        .thenApplyAsync(HttpResponse::body)
-        .thenAccept(System.out::println);
+    try {
+      return response.thenApplyAsync(HttpResponse::body)
+          .thenApplyAsync(JsonParser::parseString)
+          .thenApplyAsync(jsonElement -> new DataUsageResponseAnalyzer().analyse(jsonElement))
+          .get();
+
+    } catch (InterruptedException | ExecutionException e) {
+      e.printStackTrace();
+    }
+    return AnalysisResult.ERROR;
 
   }
 
