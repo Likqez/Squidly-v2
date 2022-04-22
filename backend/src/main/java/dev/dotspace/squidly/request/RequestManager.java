@@ -4,6 +4,7 @@ import com.google.gson.JsonParser;
 import dev.dotspace.squidly.APIEndpoint;
 import dev.dotspace.squidly.response.AnalysisResult;
 import dev.dotspace.squidly.response.DataUsageResponseAnalyzer;
+import dev.dotspace.squidly.response.data.DataUsageResponse;
 import dev.dotspace.squidly.session.SessionStore;
 import dev.dotspace.squidly.session.SessionSupplier;
 import dev.dotspace.squidly.session.SignatureFactory;
@@ -37,7 +38,7 @@ public class RequestManager {
     return false;
   }
 
-  public static AnalysisResult<?> getDataUsed() {
+  public static AnalysisResult<DataUsageResponse> getDataUsed() {
     var ss = new SessionSupplier();
     var credentials = ss.getCredentialPair();
     var sessionStore = ss.get();

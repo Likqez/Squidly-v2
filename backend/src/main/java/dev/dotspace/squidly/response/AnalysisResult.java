@@ -5,22 +5,30 @@ import java.util.Optional;
 public final class AnalysisResult<T> {
 
   public static final AnalysisResult ERROR = new AnalysisResult<>(null, "internal error", false);
-  private final Optional<T> value;
+  private final T value;
   private final String msg;
 
   public AnalysisResult(T value, String msg, boolean success) {
     if (success)
-      this.value = Optional.of(value);
+      this.value = value;
     else
-      this.value = Optional.empty();
+      this.value = null;
     this.msg = msg;
   }
 
   public Optional<T> value() {
-    return value;
+    return Optional.ofNullable(value);
   }
 
   public String msg() {
     return msg;
+  }
+
+  @Override
+  public String toString() {
+    return "AnalysisResult{" +
+           "value=" + value +
+           ", msg='" + msg + '\'' +
+           '}';
   }
 }
