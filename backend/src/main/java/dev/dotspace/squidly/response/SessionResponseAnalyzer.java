@@ -49,9 +49,6 @@ public class SessionResponseAnalyzer implements JsonResponseAnalyzer {
       throw new RuntimeException(e);
     }
 
-    return new AnalysisResult<>(
-        null,
-        "Internal error: malformed schema OR schema validation failed.",
-        false);
+    return AnalysisResult.MALFORMED;
   }
 }
