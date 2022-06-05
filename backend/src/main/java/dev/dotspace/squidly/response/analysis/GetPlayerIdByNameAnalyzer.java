@@ -1,9 +1,11 @@
-package dev.dotspace.squidly.response;
+package dev.dotspace.squidly.response.analysis;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.qindesign.json.schema.MalformedSchemaException;
 import com.qindesign.json.schema.Validator;
+import dev.dotspace.squidly.response.AnalysisResult;
+import dev.dotspace.squidly.response.JsonResponseAnalyzer;
 import dev.dotspace.squidly.response.data.DataUsageResponse;
 import dev.dotspace.squidly.response.data.GetPlayerIdByNameResponse;
 

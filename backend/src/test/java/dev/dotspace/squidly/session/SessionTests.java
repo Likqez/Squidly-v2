@@ -1,7 +1,7 @@
 package dev.dotspace.squidly.session;
 
 import com.google.gson.JsonParser;
-import dev.dotspace.squidly.response.SessionResponseAnalyzer;
+import dev.dotspace.squidly.response.analysis.SessionResponseAnalyzer;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 

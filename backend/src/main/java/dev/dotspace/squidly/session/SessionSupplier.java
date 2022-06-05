@@ -6,7 +6,7 @@ import dev.dotspace.squidly.CredentialPair;
 import dev.dotspace.squidly.request.HttpRequestFactory;
 import dev.dotspace.squidly.request.RequestManager;
 import dev.dotspace.squidly.response.AnalysisResult;
-import dev.dotspace.squidly.response.SessionResponseAnalyzer;
+import dev.dotspace.squidly.response.analysis.SessionResponseAnalyzer;
 
 import java.net.http.HttpResponse;
 import java.util.concurrent.ExecutionException;
