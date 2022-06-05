@@ -17,7 +17,7 @@ public class DataUsageResponseAnalyzer implements JsonResponseAnalyzer {
 
   public DataUsageResponseAnalyzer() {
     try {
-      validator = new Validator(JsonParser.parseReader(new InputStreamReader(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("schemas/get-data-used-schema.json")))), parseUnchecked("https://api.paladins.com/paladinsapi.svc/createsessionjson"), null, null, null);
+      validator = new Validator(JsonParser.parseReader(new InputStreamReader(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("schemas/get-data-used-schema.json")))), parseUnchecked("https://api.paladins.com/paladinsapi.svc/getdatausedjson"), null, null, null);
     } catch (MalformedSchemaException e) {
       throw new RuntimeException(e);
     }

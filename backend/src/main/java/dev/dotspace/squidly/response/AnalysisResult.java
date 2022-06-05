@@ -4,6 +4,7 @@ import java.util.Optional;
 
 public final class AnalysisResult<T> {
 
+  public static final AnalysisResult MALFORMED = new AnalysisResult<>(null, "Internal error: malformed schema OR schema validation failed.", false);
   public static final AnalysisResult ERROR = new AnalysisResult<>(null, "internal error", false);
   private final T value;
   private final String msg;
