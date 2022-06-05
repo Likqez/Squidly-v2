@@ -4,7 +4,9 @@ import com.google.gson.JsonParser;
 import dev.dotspace.squidly.APIEndpoint;
 import dev.dotspace.squidly.response.AnalysisResult;
 import dev.dotspace.squidly.response.analysis.DataUsageResponseAnalyzer;
+import dev.dotspace.squidly.response.analysis.GetPlayerIdByNameAnalyzer;
 import dev.dotspace.squidly.response.data.DataUsageResponse;
+import dev.dotspace.squidly.response.data.GetPlayerIdByNameResponse;
 import dev.dotspace.squidly.session.SessionStore;
 import dev.dotspace.squidly.session.SessionSupplier;
 import dev.dotspace.squidly.session.SignatureFactory;
@@ -63,6 +65,33 @@ public class RequestManager {
     }
     return AnalysisResult.ERROR;
 
+  }
+
+  public static AnalysisResult<GetPlayerIdByNameResponse> getPlayerIdByName(String name) {
+    var ss = new SessionSupplier();
+    var credentials = ss.getCredentialPair();
+    var sessionStore = ss.get();
+    var cmdSignature = SignatureFactory.getSignature(ss.getCredentialPair(), "getplayeridbyname");
+
+    var response = new HttpRequestFactory(APIEndpoint.PALADINS)
+        .addPath("getplayeridbynamejson")
+        .addPath(credentials.devId())
+        .addPath(cmdSignature)
+        .addPath(sessionStore.session())
+        .addPath(SignatureFactory.getTimestamp())
+        .addPath(name)
+        .asyncGET();
+
+    try {
+      return response.thenApplyAsync(HttpResponse::body)
+          .thenApplyAsync(JsonParser::parseString)
+          .thenApplyAsync(new GetPlayerIdByNameAnalyzer()::analyse)
+          .get();
+    } catch (InterruptedException | ExecutionException e) {
+      e.printStackTrace();
+    }
+
+    return AnalysisResult.ERROR;
   }
 
 }
