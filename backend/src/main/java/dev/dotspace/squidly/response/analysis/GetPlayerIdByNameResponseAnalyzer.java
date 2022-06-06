@@ -8,23 +8,25 @@ import com.networknt.schema.JsonSchemaFactory;
 import com.networknt.schema.SpecVersion;
 import dev.dotspace.squidly.response.AnalysisResult;
 import dev.dotspace.squidly.response.JsonResponseAnalyzer;
-import dev.dotspace.squidly.response.data.GetPlayerResponse;
+import dev.dotspace.squidly.response.data.GetPlayerIdByNameResponse;
 
-public class GetPlayerAnalyzer implements JsonResponseAnalyzer {
+
+public class GetPlayerIdByNameResponseAnalyzer implements JsonResponseAnalyzer {
 
   private final JsonSchema schema;
 
-  public GetPlayerAnalyzer() {
+  public GetPlayerIdByNameResponseAnalyzer() {
     JsonSchemaFactory factory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7);
-    this.schema = factory.getSchema(getClass().getClassLoader().getResourceAsStream("schemas/get-player-schema.json"));
+    this.schema = factory.getSchema(getClass().getClassLoader().getResourceAsStream("schemas/get-player-id-by-name-schema.json"));
   }
 
+
   @Override
-  public AnalysisResult<GetPlayerResponse> analyse(JsonNode jsonNode) {
+  public AnalysisResult<GetPlayerIdByNameResponse> analyse(JsonNode jsonNode) {
     var errors = schema.validate(jsonNode);
 
     if (!errors.isEmpty()) {
-      System.err.printf("Could not validate against 'get-player' schema: %s%n", jsonNode);
+      System.err.printf("Could not validate against 'get-player-id-by-name' schema: %s%n", jsonNode);
       return AnalysisResult.INVALID;
     }
 
@@ -36,7 +38,7 @@ public class GetPlayerAnalyzer implements JsonResponseAnalyzer {
     var objectMapper = new ObjectMapper();
     try {
       return new AnalysisResult<>(
-          objectMapper.treeToValue(jsonNode, GetPlayerResponse.class),
+          objectMapper.treeToValue(jsonNode, GetPlayerIdByNameResponse.class),
           jsonNode.get("ret_msg").asText(),
           true);
     } catch (JsonProcessingException e) {
@@ -44,5 +46,6 @@ public class GetPlayerAnalyzer implements JsonResponseAnalyzer {
     }
 
     return AnalysisResult.ERROR;
+
   }
 }

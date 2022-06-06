@@ -8,25 +8,23 @@ import com.networknt.schema.JsonSchemaFactory;
 import com.networknt.schema.SpecVersion;
 import dev.dotspace.squidly.response.AnalysisResult;
 import dev.dotspace.squidly.response.JsonResponseAnalyzer;
-import dev.dotspace.squidly.response.data.GetPlayerIdByNameResponse;
+import dev.dotspace.squidly.response.data.GetPlayerResponse;
 
-
-public class GetPlayerIdByNameAnalyzer implements JsonResponseAnalyzer {
+public class GetPlayerResponseAnalyzer implements JsonResponseAnalyzer {
 
   private final JsonSchema schema;
 
-  public GetPlayerIdByNameAnalyzer() {
+  public GetPlayerResponseAnalyzer() {
     JsonSchemaFactory factory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7);
-    this.schema = factory.getSchema(getClass().getClassLoader().getResourceAsStream("schemas/get-player-id-by-name-schema.json"));
+    this.schema = factory.getSchema(getClass().getClassLoader().getResourceAsStream("schemas/get-player-schema.json"));
   }
 
-
   @Override
-  public AnalysisResult<GetPlayerIdByNameResponse> analyse(JsonNode jsonNode) {
+  public AnalysisResult<GetPlayerResponse> analyse(JsonNode jsonNode) {
     var errors = schema.validate(jsonNode);
 
     if (!errors.isEmpty()) {
-      System.err.printf("Could not validate against 'get-player-id-by-name' schema: %s%n", jsonNode);
+      System.err.printf("Could not validate against 'get-player' schema: %s%n", jsonNode);
       return AnalysisResult.INVALID;
     }
 
@@ -38,7 +36,7 @@ public class GetPlayerIdByNameAnalyzer implements JsonResponseAnalyzer {
     var objectMapper = new ObjectMapper();
     try {
       return new AnalysisResult<>(
-          objectMapper.treeToValue(jsonNode, GetPlayerIdByNameResponse.class),
+          objectMapper.treeToValue(jsonNode, GetPlayerResponse.class),
           jsonNode.get("ret_msg").asText(),
           true);
     } catch (JsonProcessingException e) {
@@ -46,6 +44,5 @@ public class GetPlayerIdByNameAnalyzer implements JsonResponseAnalyzer {
     }
 
     return AnalysisResult.ERROR;
-
   }
 }
