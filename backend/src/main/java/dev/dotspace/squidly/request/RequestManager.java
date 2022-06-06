@@ -1,14 +1,15 @@
 package dev.dotspace.squidly.request;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.dotspace.squidly.APIEndpoint;
 import dev.dotspace.squidly.response.AnalysisResult;
+import dev.dotspace.squidly.response.JsonResponseAnalyzer;
 import dev.dotspace.squidly.response.analysis.DataUsageResponseAnalyzer;
-import dev.dotspace.squidly.response.analysis.GetPlayerIdByNameAnalyzer;
+import dev.dotspace.squidly.response.analysis.GetPlayerIdByNameResponseAnalyzer;
+import dev.dotspace.squidly.response.analysis.GetPlayerResponseAnalyzer;
 import dev.dotspace.squidly.response.data.DataUsageResponse;
 import dev.dotspace.squidly.response.data.GetPlayerIdByNameResponse;
+import dev.dotspace.squidly.response.data.GetPlayerResponse;
 import dev.dotspace.squidly.session.SessionStore;
 import dev.dotspace.squidly.session.SessionSupplier;
 import dev.dotspace.squidly.session.SignatureFactory;
@@ -60,14 +61,8 @@ public class RequestManager {
 
     try {
       return response.thenApplyAsync(HttpResponse::body)
-          .thenApplyAsync(body -> {
-            try {
-              return mapper.readValue(body, JsonNode.class);
-            } catch (JsonProcessingException e) {
-              throw new RuntimeException(e);
-            }
-          })
-          .thenApplyAsync(jsonElement -> new DataUsageResponseAnalyzer().analyse(jsonElement))
+          .thenApplyAsync(JsonResponseAnalyzer::toJsonNode)
+          .thenApplyAsync(new DataUsageResponseAnalyzer()::analyse)
           .get();
 
     } catch (InterruptedException | ExecutionException e) {
@@ -96,14 +91,37 @@ public class RequestManager {
 
     try {
       return response.thenApplyAsync(HttpResponse::body)
-          .thenApplyAsync(body -> {
-            try {
-              return mapper.readValue(body, JsonNode.class);
-            } catch (JsonProcessingException e) {
-              throw new RuntimeException(e);
-            }
-          })
-          .thenApplyAsync(new GetPlayerIdByNameAnalyzer()::analyse)
+          .thenApplyAsync(JsonResponseAnalyzer::toJsonNode)
+          .thenApplyAsync(new GetPlayerIdByNameResponseAnalyzer()::analyse)
+          .get();
+    } catch (InterruptedException | ExecutionException e) {
+      e.printStackTrace();
+    }
+
+    return AnalysisResult.ERROR;
+  }
+
+  public static AnalysisResult<GetPlayerResponse> getPlayer(String player) {
+    var ss = new SessionSupplier();
+    var credentials = ss.getCredentialPair();
+    var sessionStore = ss.get();
+    var cmdSignature = SignatureFactory.getSignature(ss.getCredentialPair(), "getplayer");
+
+    var response = new HttpRequestFactory(APIEndpoint.PALADINS)
+        .addPath("getplayerjson")
+        .addPath(credentials.devId())
+        .addPath(cmdSignature)
+        .addPath(sessionStore.session())
+        .addPath(SignatureFactory.getTimestamp())
+        .addPath(player)
+        .asyncGET();
+
+    var mapper = new ObjectMapper();
+
+    try {
+      return response.thenApplyAsync(HttpResponse::body)
+          .thenApplyAsync(JsonResponseAnalyzer::toJsonNode)
+          .thenApplyAsync(new GetPlayerResponseAnalyzer()::analyse)
           .get();
     } catch (InterruptedException | ExecutionException e) {
       e.printStackTrace();
