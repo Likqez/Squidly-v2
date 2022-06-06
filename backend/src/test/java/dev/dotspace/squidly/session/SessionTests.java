@@ -1,6 +1,7 @@
 package dev.dotspace.squidly.session;
 
-import com.google.gson.JsonParser;
+//import com.google.gson.JsonParser;
+import dev.dotspace.squidly.response.JsonResponseAnalyzer;
 import dev.dotspace.squidly.response.analysis.SessionResponseAnalyzer;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -18,8 +19,8 @@ public class SessionTests {
       """, """
       {"session_id": "XASDDDSAD", "ret_msg": "ok", "timestamp": " "}
       """ })
-  public void testWithInvalidSessionResponse(String jsonObject) {
-    var obj = JsonParser.parseString(jsonObject).getAsJsonObject();
+  public void testWithInvalidSessionResponse(String s) {
+    var obj = JsonResponseAnalyzer.toJsonNode(s);
     assertAll(() -> {
       var result = new SessionResponseAnalyzer().analyse(obj);
       assertTrue(result.value().isEmpty());
@@ -34,8 +35,8 @@ public class SessionTests {
       """, """
       {"session_id": "XDASDASDADSD", "ret_msg": "Approved", "timestamp": "11/28/1971 3:09:16 PM"}
       """ })
-  public void testWithValidSessionResponse(String jsonObject) {
-    var obj = JsonParser.parseString(jsonObject).getAsJsonObject();
+  public void testWithValidSessionResponse(String s) {
+    var obj = JsonResponseAnalyzer.toJsonNode(s);
 
     assertAll(() -> {
       var result = new SessionResponseAnalyzer().analyse(obj);
