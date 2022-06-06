@@ -7,6 +7,10 @@ subprojects {
     compileJava.options.encoding = "UTF-8"
     compileTestJava.options.encoding = "UTF-8"
 
+    ext {
+        jackson = "2.13.3";
+    }
+
     repositories {
         mavenCentral()
         //Discord JDA

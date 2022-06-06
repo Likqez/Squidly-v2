@@ -1,6 +1,8 @@
 package dev.dotspace.squidly.request;
 
-import com.google.gson.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.dotspace.squidly.APIEndpoint;
 import dev.dotspace.squidly.response.AnalysisResult;
 import dev.dotspace.squidly.response.analysis.DataUsageResponseAnalyzer;
@@ -54,9 +56,17 @@ public class RequestManager {
         .addPath(SignatureFactory.getTimestamp())
         .asyncGET();
 
+    var mapper = new ObjectMapper();
+
     try {
       return response.thenApplyAsync(HttpResponse::body)
-          .thenApplyAsync(JsonParser::parseString)
+          .thenApplyAsync(body -> {
+            try {
+              return mapper.readValue(body, JsonNode.class);
+            } catch (JsonProcessingException e) {
+              throw new RuntimeException(e);
+            }
+          })
           .thenApplyAsync(jsonElement -> new DataUsageResponseAnalyzer().analyse(jsonElement))
           .get();
 
@@ -82,9 +92,17 @@ public class RequestManager {
         .addPath(name)
         .asyncGET();
 
+    var mapper = new ObjectMapper();
+
     try {
       return response.thenApplyAsync(HttpResponse::body)
-          .thenApplyAsync(JsonParser::parseString)
+          .thenApplyAsync(body -> {
+            try {
+              return mapper.readValue(body, JsonNode.class);
+            } catch (JsonProcessingException e) {
+              throw new RuntimeException(e);
+            }
+          })
           .thenApplyAsync(new GetPlayerIdByNameAnalyzer()::analyse)
           .get();
     } catch (InterruptedException | ExecutionException e) {

@@ -1,19 +1,19 @@
 package dev.dotspace.squidly.response.data;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public record GetPlayerIdByNameResponse(
-    @SerializedName("Name")
+    @JsonProperty("Name")
     String name,
-    @SerializedName("player_id")
+    @JsonProperty("player_id")
     int playerId,
-    @SerializedName("portal")
+    @JsonProperty("portal")
     String portal,
-    @SerializedName("portal_id")
+    @JsonProperty("portal_id")
     String portalId,
-    @SerializedName("privacy_flag")
+    @JsonProperty("privacy_flag")
     String privacyFlag,
-    @SerializedName("ret_msg")
+    @JsonProperty("ret_msg")
     String msg
 ) {
 }

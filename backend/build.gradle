@@ -1,8 +1,13 @@
 
 dependencies {
     implementation 'commons-codec:commons-codec:1.15'
-    implementation 'com.google.code.gson:gson:2.9.0'
-    implementation 'com.qindesign:snowy-json:0.16.0'
+    //implementation 'com.google.code.gson:gson:2.9.0'
+    //implementation 'com.qindesign:snowy-json:0.16.0'
+
+    implementation "com.fasterxml.jackson.core:jackson-core:${jackson}"
+    implementation "com.fasterxml.jackson.core:jackson-databind:${jackson}"
+    implementation "com.fasterxml.jackson.core:jackson-annotations:${jackson}"
+    implementation 'com.networknt:json-schema-validator:1.0.70'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'

@@ -1,6 +1,8 @@
 package dev.dotspace.squidly.session;
 
-import com.google.gson.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.dotspace.squidly.APIEndpoint;
 import dev.dotspace.squidly.CredentialPair;
 import dev.dotspace.squidly.request.HttpRequestFactory;
@@ -49,10 +51,18 @@ public class SessionSupplier implements Supplier<SessionStore> {
         .addPath(SignatureFactory.getTimestamp())
         .asyncGET();
 
+    var mapper = new ObjectMapper();
+
     try {
       return res.thenApplyAsync(HttpResponse::body)
-          .thenApplyAsync(JsonParser::parseString)
-          .thenApplyAsync(jsonObject -> new SessionResponseAnalyzer().analyse(jsonObject))
+          .thenApplyAsync(body -> {
+            try {
+              return mapper.readValue(body, JsonNode.class);
+            } catch (JsonProcessingException e) {
+              throw new RuntimeException(e);
+            }
+          })
+          .thenApplyAsync(jsonNode -> new SessionResponseAnalyzer().analyse(jsonNode))
           .get();
 
     } catch (InterruptedException | ExecutionException e) {
