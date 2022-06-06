@@ -1,8 +1,11 @@
 package dev.dotspace.squidly.session;
 
 //import com.google.gson.JsonParser;
+
+import dev.dotspace.squidly.request.RequestManager;
 import dev.dotspace.squidly.response.JsonResponseAnalyzer;
 import dev.dotspace.squidly.response.analysis.SessionResponseAnalyzer;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -42,6 +45,12 @@ public class SessionTests {
       var result = new SessionResponseAnalyzer().analyse(obj);
       assertTrue(result.value().isPresent());
     });
+  }
+
+  @Test
+  public void testSessionRetrieval() {
+    var ss = new SessionSupplier();
+    assertTrue(RequestManager.testSession(ss.get()));
   }
 
 }
