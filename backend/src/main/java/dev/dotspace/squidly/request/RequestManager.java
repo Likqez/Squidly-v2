@@ -1,6 +1,5 @@
 package dev.dotspace.squidly.request;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.dotspace.squidly.APIEndpoint;
 import dev.dotspace.squidly.response.AnalysisResult;
 import dev.dotspace.squidly.response.JsonResponseAnalyzer;
@@ -57,8 +56,6 @@ public class RequestManager {
         .addPath(SignatureFactory.getTimestamp())
         .asyncGET();
 
-    var mapper = new ObjectMapper();
-
     try {
       return response.thenApplyAsync(HttpResponse::body)
           .thenApplyAsync(JsonResponseAnalyzer::toJsonNode)
@@ -87,8 +84,6 @@ public class RequestManager {
         .addPath(name)
         .asyncGET();
 
-    var mapper = new ObjectMapper();
-
     try {
       return response.thenApplyAsync(HttpResponse::body)
           .thenApplyAsync(JsonResponseAnalyzer::toJsonNode)
@@ -115,8 +110,6 @@ public class RequestManager {
         .addPath(SignatureFactory.getTimestamp())
         .addPath(player)
         .asyncGET();
-
-    var mapper = new ObjectMapper();
 
     try {
       return response.thenApplyAsync(HttpResponse::body)
