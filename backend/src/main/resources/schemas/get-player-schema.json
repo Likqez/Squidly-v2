@@ -25,7 +25,7 @@
         "type": "number"
       },
       "AvatarURL": {
-        "type": "string"
+        "type": ["string", "null"]
       },
       "Created_Datetime": {
         "type": "string",
