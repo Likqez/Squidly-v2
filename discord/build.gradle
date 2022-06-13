@@ -1,4 +1,6 @@
 
 dependencies {
-
+    implementation("net.dv8tion:JDA:${discord_JDA}") {
+        exclude module: 'opus-java'
+    }
 }
