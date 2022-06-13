@@ -13,7 +13,7 @@ public class Squidly {
 
   public static void main(String[] args) {
 
-    var token = System.getenv("squildy_bot_token");
+    var token = System.getenv("squidly_bot_token");
 
     var jdaBuilder = JDABuilder.createDefault(token)
         .disableCache(List.of(
@@ -26,7 +26,7 @@ public class Squidly {
             CacheFlag.MEMBER_OVERRIDES)
         )
         .setChunkingFilter(ChunkingFilter.NONE)
-        .setMemberCachePolicy(MemberCachePolicy.ALL)
+        .setMemberCachePolicy(MemberCachePolicy.NONE)
         .disableIntents(List.of(
             GatewayIntent.GUILD_PRESENCES,
             GatewayIntent.GUILD_MEMBERS,
