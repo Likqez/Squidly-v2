@@ -13,7 +13,7 @@ import static dev.dotspace.squidly.conf.SlashCommandConfiguration.PROFILE_COMMAN
 public class ProfileCommandListener {
 
   public static void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
-    assert event.getGuild() == null;
+    assert event.getGuild() != null;
     assert event.getName().equals(PROFILE_COMMAND.getName());
 
     var playername = Objects.requireNonNull(event.getOption("player")).getAsString();

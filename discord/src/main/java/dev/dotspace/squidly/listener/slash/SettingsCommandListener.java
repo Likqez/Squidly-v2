@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 public class SettingsCommandListener {
 
   public static void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
-    assert event.getGuild() == null;
+    assert event.getGuild() != null;
     assert event.getName().equals(SlashCommandConfiguration.PROFILE_COMMAND.getName());
 
     event.reply("I can't handle that command right now :c").setEphemeral(true).queue();
