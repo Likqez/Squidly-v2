@@ -1,9 +1,9 @@
 package dev.dotspace.squidly.embed;
 
 import dev.dotspace.squidly.conf.ConstantProvider;
-import dev.dotspace.squidly.response.data.GetPlayerResponse;
-import dev.dotspace.squidly.response.data.RankedContainer;
-import dev.dotspace.squidly.response.data.RankedTier;
+import dev.dotspace.squidly.response.model.GetPlayerResponse;
+import dev.dotspace.squidly.response.model.RankedContainer;
+import dev.dotspace.squidly.response.model.RankedTier;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 

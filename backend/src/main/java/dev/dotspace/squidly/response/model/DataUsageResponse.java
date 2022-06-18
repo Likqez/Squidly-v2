@@ -1,4 +1,4 @@
-package dev.dotspace.squidly.response.data;
+package dev.dotspace.squidly.response.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

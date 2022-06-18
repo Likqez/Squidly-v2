@@ -8,7 +8,7 @@ import com.networknt.schema.JsonSchemaFactory;
 import com.networknt.schema.SpecVersion;
 import dev.dotspace.squidly.response.AnalysisResult;
 import dev.dotspace.squidly.response.JsonResponseAnalyzer;
-import dev.dotspace.squidly.response.data.GetPlayerResponse;
+import dev.dotspace.squidly.response.model.GetPlayerResponse;
 
 public class GetPlayerResponseAnalyzer implements JsonResponseAnalyzer {
 
