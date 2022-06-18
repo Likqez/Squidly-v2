@@ -1,7 +1,5 @@
 package dev.dotspace.squidly.response.model;
 
-import java.util.Arrays;
-
 public enum RankedTier {
   QUALIFYING,
   BRONZE_V,
@@ -39,10 +37,7 @@ public enum RankedTier {
   }
 
   public static RankedTier getTier(int i) {
-    return Arrays.stream(RankedTier.values())
-        .filter(rankedTier -> rankedTier.id == i)
-        .findFirst()
-        .orElseThrow();
+    return RankedTier.values()[i];
   }
 
 
