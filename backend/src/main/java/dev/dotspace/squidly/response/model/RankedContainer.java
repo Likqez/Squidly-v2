@@ -18,7 +18,7 @@ public record RankedContainer(
     @JsonProperty("Season")
     int season,
     @JsonProperty("Tier")
-    int tier,
+    RankedTier tier,
     @JsonProperty("Trend")
     int trend,
     @JsonProperty("Wins")

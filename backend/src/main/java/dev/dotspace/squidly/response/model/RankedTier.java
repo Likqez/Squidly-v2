@@ -1,5 +1,7 @@
 package dev.dotspace.squidly.response.model;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum RankedTier {
   QUALIFYING,
   BRONZE_V,
@@ -40,6 +42,14 @@ public enum RankedTier {
     return RankedTier.values()[i];
   }
 
+  @Override
+  public String toString() {
+    return name().replace("_", " ");
+  }
 
+  @JsonValue
+  public int getId() {
+    return id;
+  }
 }
  
