@@ -1,6 +1,10 @@
 package dev.dotspace.squidly.response.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dev.dotspace.squidly.response.APIConstantProvider;
+
+import java.time.ZonedDateTime;
 
 public record GetPlayerResponse(
     @JsonProperty("ActivePlayerId")
@@ -10,13 +14,15 @@ public record GetPlayerResponse(
     @JsonProperty("AvatarURL")
     String avatarUrl,
     @JsonProperty("Created_Datetime")
-    String createdDateTime,
+    @JsonFormat(timezone = "UTC", pattern = APIConstantProvider.ORIGINAL_DATE_TIME_FORMAT_PATTERN)
+    ZonedDateTime createdDateTime,
     @JsonProperty("HoursPlayed")
     int hoursPlayed,
     @JsonProperty("Id")
     int id,
     @JsonProperty("Last_Login_Datetime")
-    String lastLoginDateTime,
+    @JsonFormat(timezone = "UTC", pattern = APIConstantProvider.ORIGINAL_DATE_TIME_FORMAT_PATTERN)
+    ZonedDateTime lastLoginDateTime,
     @JsonProperty("Leaves")
     int leaves,
     @JsonProperty("Level")

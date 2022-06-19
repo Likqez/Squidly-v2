@@ -26,7 +26,7 @@ public class SquildyBot {
 
   private void initializeCommands() {
     var commands = this.jda.updateCommands();
-    commands.addCommands(SlashCommandConfiguration.getAllSlashCommands()).queue(success -> System.out.printf("Slashcommands successfully applied! %s%n", success));
+    commands.addCommands(SlashCommandConfiguration.getAllSlashCommands()).queue(success -> System.out.printf("Slashcommands successfully registered! %s%n", success));
   }
 
   private void login(JDABuilder jdaBuilder) {

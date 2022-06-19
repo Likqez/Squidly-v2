@@ -6,6 +6,9 @@ import dev.dotspace.squidly.response.model.RankedContainer;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -86,6 +89,19 @@ public class ProfileCommandEmbedFactory {
   }
 
   private String getGeneralInfo(GetPlayerResponse response, String playername) {
+    var durationMinutes = Duration.between(response.lastLoginDateTime(), Instant.now().atZone(ZoneId.of("UTC"))).getSeconds() / 60;
+    long days = durationMinutes / 60 / 24;
+    durationMinutes -= (days * 60 * 24);
+    long hours = durationMinutes / 60;
+    durationMinutes -= (hours * 60);
+
+    String lastLoginDuration = "%s%s%sago".formatted(
+        (days > 0 ? days + "d, " : ""),
+        (hours > 0 ? hours + "h " : ""),
+        (durationMinutes > 0 ? "& " + durationMinutes + "m " : "")
+    );
+
+
     return """
         ```excel
         identifier    = %d
@@ -93,8 +109,8 @@ public class ProfileCommandEmbedFactory {
         playerlevel   = %d (%d xp)
         achievements  = %d
                 
-        created on    = %s
-        last seeon on = %s
+        created in    = %s
+        last seen     = %s
                 
         platform      = %s
         region        = %s
@@ -105,8 +121,8 @@ public class ProfileCommandEmbedFactory {
         response.level(),
         response.totalXP(),
         response.totalAchievements(),
-        response.createdDateTime(), //TODO existing time in days
-        response.lastLoginDateTime(), //TODO convert in days from now.
+        ConstantProvider.DISPLAY_DATE_TIME_FORMATTER_SHORT.format(response.createdDateTime()), //TODO (existing time in days)
+        lastLoginDuration,
         response.platform(),
         response.region()
     );

@@ -3,6 +3,7 @@ package dev.dotspace.squidly.response.analysis;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.networknt.schema.JsonSchema;
 import com.networknt.schema.JsonSchemaFactory;
 import com.networknt.schema.SpecVersion;
@@ -23,7 +24,7 @@ public class GetPlayerResponseAnalyzer implements JsonResponseAnalyzer {
   public AnalysisResult<GetPlayerResponse> analyse(JsonNode jsonNode) {
     var errors = schema.validate(jsonNode);
 
-    if (!errors.isEmpty()) {
+    if (! errors.isEmpty()) {
       System.err.printf("Could not validate against 'get-player' schema: %s%n", jsonNode);
       return AnalysisResult.INVALID;
     }
@@ -33,7 +34,7 @@ public class GetPlayerResponseAnalyzer implements JsonResponseAnalyzer {
 
     jsonNode = jsonNode.get(0);
 
-    var objectMapper = new ObjectMapper();
+    var objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
     try {
       return new AnalysisResult<>(
           objectMapper.treeToValue(jsonNode, GetPlayerResponse.class),
