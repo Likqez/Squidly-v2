@@ -40,7 +40,7 @@ public class ProfileCommandEmbedFactory {
 
     return """
         ```excel
-        %s (#%03d)
+        %s (%02dTP)
                 
         played  = %d
         w/l     = %d/%d
@@ -49,7 +49,7 @@ public class ProfileCommandEmbedFactory {
         ```
         """.formatted(
         rankedContainer.tier().toString(),
-        rankedContainer.prevRank(),
+        rankedContainer.points(),
         gamesPlayed,
         rankedContainer.wins(),
         rankedContainer.losses(),
