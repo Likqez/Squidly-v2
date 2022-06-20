@@ -100,6 +100,7 @@ public class ProfileCommandEmbedFactory {
         (loginDiffMins > 0 ? "& " + loginDiffMins + "m " : "")
     );
 
+    var existingDiff = Duration.between(response.createdDateTime(), Instant.now().atZone(ZoneId.of("UTC")));
 
     return """
         ```excel
@@ -108,7 +109,7 @@ public class ProfileCommandEmbedFactory {
         playerlevel   = %d (%d xp)
         achievements  = %d
                 
-        created in    = %s
+        created in    = %s (%sd ago)
         last seen     = %s
                 
         platform      = %s
@@ -120,7 +121,8 @@ public class ProfileCommandEmbedFactory {
         response.level(),
         response.totalXP(),
         response.totalAchievements(),
-        ConstantProvider.DISPLAY_DATE_TIME_FORMATTER_SHORT.format(response.createdDateTime()), //TODO (existing time in days)
+        ConstantProvider.DISPLAY_DATE_TIME_FORMATTER_SHORT.format(response.createdDateTime()),
+        existingDiff.toDays(),
         lastLoginDuration,
         response.platform(),
         response.region()
