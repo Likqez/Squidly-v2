@@ -89,16 +89,15 @@ public class ProfileCommandEmbedFactory {
   }
 
   private String getGeneralInfo(GetPlayerResponse response, String playername) {
-    var durationMinutes = Duration.between(response.lastLoginDateTime(), Instant.now().atZone(ZoneId.of("UTC"))).getSeconds() / 60;
-    long days = durationMinutes / 60 / 24;
-    durationMinutes -= (days * 60 * 24);
-    long hours = durationMinutes / 60;
-    durationMinutes -= (hours * 60);
+    var loginDiff = Duration.between(response.lastLoginDateTime(), Instant.now().atZone(ZoneId.of("UTC")));
+    var loginDiffDays = loginDiff.toDays();
+    var loginDiffHours = loginDiff.toHoursPart();
+    var loginDiffMins = loginDiff.toMinutesPart();
 
     String lastLoginDuration = "%s%s%sago".formatted(
-        (days > 0 ? days + "d, " : ""),
-        (hours > 0 ? hours + "h " : ""),
-        (durationMinutes > 0 ? "& " + durationMinutes + "m " : "")
+        (loginDiffDays > 0 ? loginDiffDays + "d, " : ""),
+        (loginDiffHours > 0 ? loginDiffHours + "h " : ""),
+        (loginDiffMins > 0 ? "& " + loginDiffMins + "m " : "")
     );
 
 
