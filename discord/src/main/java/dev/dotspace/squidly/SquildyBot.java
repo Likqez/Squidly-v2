@@ -1,7 +1,7 @@
 package dev.dotspace.squidly;
 
-import dev.dotspace.squidly.conf.SlashCommandConfiguration;
-import dev.dotspace.squidly.listener.slash.GlobalSlashCommandListener;
+import dev.dotspace.squidly.listener.SlashCommandListener;
+import dev.dotspace.squidly.slash.SlashCommandList;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 
@@ -20,13 +20,13 @@ public class SquildyBot {
 
   private void iniializeListeners() {
     this.jda.addEventListener(
-        new GlobalSlashCommandListener()
+        new SlashCommandListener()
     );
   }
 
   private void initializeCommands() {
     var commands = this.jda.updateCommands();
-    commands.addCommands(SlashCommandConfiguration.getAllSlashCommands()).queue(success -> System.out.printf("Slashcommands successfully registered! %s%n", success));
+    commands.addCommands(new SlashCommandList()).queue(success -> System.out.printf("Slashcommands successfully registered! %s%n", success));
   }
 
   private void login(JDABuilder jdaBuilder) {

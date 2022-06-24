@@ -1,21 +1,20 @@
-package dev.dotspace.squidly.conf;
+package dev.dotspace.squidly.slash.impl.settings;
 
+import dev.dotspace.squidly.slash.AdvancedSlashCommand;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
-import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandGroupData;
 import net.dv8tion.jda.internal.interactions.CommandDataImpl;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
-import java.util.List;
+public class SettingsSlashCommand extends AdvancedSlashCommand {
 
-public class SlashCommandConfiguration {
+  public static final String NAME = "settings";
+  public static final String DESC = "squidly user settings";
 
-  public static final SlashCommandData PROFILE_COMMAND = new CommandDataImpl("profile", "Retrieves generic information about a player")
-      .addOption(OptionType.STRING, "player", "playername/gamertag or saved identifier");
-
-  public static final SlashCommandData SETTINGS_COMMAND = new CommandDataImpl("settings", "squidly user settings")
+  private static final SlashCommandData COMMAND_DATA = new CommandDataImpl(NAME, DESC)
       .addSubcommandGroups(
           new SubcommandGroupData("saves", "Saved player menu")
               .addSubcommands(
@@ -30,8 +29,14 @@ public class SlashCommandConfiguration {
           new SubcommandData("hidden", "Toggle auto privacy mode")
       );
 
-
-  public static Collection<? extends CommandData> getAllSlashCommands() {
-    return List.of(PROFILE_COMMAND, SETTINGS_COMMAND);
+  public SettingsSlashCommand() {
+    super(
+        COMMAND_DATA,
+        null);
   }
+
+  public static void onExecute(@NotNull SlashCommandInteractionEvent event) {
+    event.reply("I can't handle that command right now :c").setEphemeral(true).queue();
+  }
+
 }

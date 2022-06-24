@@ -1,8 +1,8 @@
-package dev.dotspace.squidly.embed;
+package dev.dotspace.squidly.slash.impl.profile;
 
-import dev.dotspace.squidly.conf.ConstantProvider;
 import dev.dotspace.squidly.response.model.GetPlayerResponse;
 import dev.dotspace.squidly.response.model.RankedContainer;
+import dev.dotspace.squidly.util.EmbedFactory;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 
@@ -12,11 +12,11 @@ import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Objects;
 
-public class ProfileCommandEmbedFactory {
+public class ProfileEmbedFactory implements EmbedFactory<GetPlayerResponse> {
 
   public MessageEmbed createEmbed(GetPlayerResponse response) {
     final String playername = selectFirstNonNull(response.name(), response.hzPlayerName(), response.hzGamerTag());
-    final String avatar = selectFirstNonNull(response.avatarUrl(), ConstantProvider.DEFAULT_AVATAR_URL);
+    final String avatar = selectFirstNonNull(response.avatarUrl(), DEFAULT_AVATAR_URL);
     final String title = response.title() != null ? response.title() : "";
 
 
@@ -28,7 +28,7 @@ public class ProfileCommandEmbedFactory {
     return new EmbedBuilder()
         .setTitle(playername + "'s profile")
         .setThumbnail(avatar)
-        .setFooter(ConstantProvider.SUCCESS_RESPONSE_FOOTER)
+        .setFooter(SUCCESS_RESPONSE_FOOTER)
         .addField(title, generalInfo, false)
         .addField("Gameplay", gameplayStats, false)
         .addField("Ranked KBM", kbmStats, true)
@@ -121,7 +121,7 @@ public class ProfileCommandEmbedFactory {
         response.level(),
         response.totalXP(),
         response.totalAchievements(),
-        ConstantProvider.DISPLAY_DATE_TIME_FORMATTER_SHORT.format(response.createdDateTime()),
+        DISPLAY_DATE_TIME_FORMATTER_SHORT.format(response.createdDateTime()),
         existingDiff.toDays(),
         lastLoginDuration,
         response.platform(),
