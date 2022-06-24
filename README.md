@@ -24,10 +24,10 @@ Advanced Discord-Bot satisfying your competitive needs whilst playing [Paladins]
 
 A few of the things you will be able to do with Squidly:
 
-- [ ] Retrieve & display data directly from Hi-Rez
-- [ ] Works with every Platform (Switch, Steam, Epic ...)
-- [ ] Visualize opposing teams and showing their stats
-- [ ] Show Level, Rank, Playtime and more rich information
+- Retrieve & display data directly from Hi-Rez
+- Works with every Platform (Switch, Steam, Epic ...)
+- Visualize opposing teams and showing their stats
+- Show Level, Rank, Playtime and more rich information
 
 ## Feedback
 
@@ -39,6 +39,21 @@ If there's anything you'd like to chat about, please feel free to join our [Disc
 
 ## Building and Running
 
+#### Building
+
+&rarr; Execute ``gradle build shadowJar`` on the root project to create the executable fat jar.
+
+#### Running
+
+- Save your discord bot token in envirnoment variable ``squidly_bot_token``.
+- Save the hirez dev. credentials in the following env. variables:  
+  Your Hirez DevId into: ``squidly_devid``
+  and your authentication key into: ``squidly_authkey``.
+
+&rarr; Finally grab the jar archive from the latest [release][gh-releases] or from ``discord/build/libs/``
+and **execute** it with your favourite JVM.
+
 [pala]: <https://www.paladins.com/>
 [hirez]: <http://www.hirezstudios.com/>
 [spacedc]: <https://discord.gg/mFfDMAEFWE>
+[gh-releases]: <https://github.com/Likqez/Squidly-v2/releases>

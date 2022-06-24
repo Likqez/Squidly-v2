@@ -6,3 +6,9 @@ dependencies {
 
     implementation project(':backend')
 }
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'dev.dotspace.squidly.Squidly'
+    }
+}
