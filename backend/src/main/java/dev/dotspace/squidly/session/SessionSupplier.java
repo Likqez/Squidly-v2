@@ -46,7 +46,7 @@ public class SessionSupplier implements Supplier<SessionStore> {
   private AnalysisResult<SessionStore> retrieveNewSession(APIEndpoint endpoint) {
     var res = new HttpRequestFactory(endpoint)
         .addPath("createsessionjson")
-        .addPath(credentialPair.devId())
+        .addPath(credentialPair.user())
         .addPath(SignatureFactory.getSignature(credentialPair, "createsession"))
         .addPath(SignatureFactory.getTimestamp())
         .asyncGET();

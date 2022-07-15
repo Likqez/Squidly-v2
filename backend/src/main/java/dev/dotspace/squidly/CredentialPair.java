@@ -1,6 +1,6 @@
 package dev.dotspace.squidly;
 
-public record CredentialPair(String devId, String authKey) {
+public record CredentialPair(String user, String auth) {
 
   public static CredentialPair load() {
     var devId = System.getenv().getOrDefault("squidly_devid", "001");

@@ -10,7 +10,7 @@ import java.time.format.DateTimeFormatter;
 public class SignatureFactory {
 
   public static String getSignature(CredentialPair credentialPair, String command) {
-    return SignatureFactory.getSignature(credentialPair.devId(), credentialPair.authKey(), command);
+    return SignatureFactory.getSignature(credentialPair.user(), credentialPair.auth(), command);
   }
 
   public static String getSignature(String devid, String authKey, String command) {

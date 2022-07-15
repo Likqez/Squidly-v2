@@ -25,7 +25,7 @@ public class RequestManager {
 
     var response = new HttpRequestFactory(APIEndpoint.PALADINS)
         .addPath("testsessionjson")
-        .addPath(credentials.devId())
+        .addPath(credentials.user())
         .addPath(cmdSignature)
         .addPath(sessionStore.session())
         .addPath(SignatureFactory.getTimestamp())
@@ -50,7 +50,7 @@ public class RequestManager {
 
     var response = new HttpRequestFactory(APIEndpoint.PALADINS)
         .addPath("getdatausedjson")
-        .addPath(credentials.devId())
+        .addPath(credentials.user())
         .addPath(cmdSignature)
         .addPath(sessionStore.session())
         .addPath(SignatureFactory.getTimestamp())
@@ -77,7 +77,7 @@ public class RequestManager {
 
     var response = new HttpRequestFactory(APIEndpoint.PALADINS)
         .addPath("getplayeridbynamejson")
-        .addPath(credentials.devId())
+        .addPath(credentials.user())
         .addPath(cmdSignature)
         .addPath(sessionStore.session())
         .addPath(SignatureFactory.getTimestamp())
@@ -104,7 +104,7 @@ public class RequestManager {
 
     var response = new HttpRequestFactory(APIEndpoint.PALADINS)
         .addPath("getplayerjson")
-        .addPath(credentials.devId())
+        .addPath(credentials.user())
         .addPath(cmdSignature)
         .addPath(sessionStore.session())
         .addPath(SignatureFactory.getTimestamp())
