@@ -22,6 +22,8 @@ subprojects {
     ext {
         discord_JDA = "5.0.0-alpha.12"
         jackson = "2.13.3"
+        arango = "6.18.0"
+        arango_velocypack = "3.0.1"
     }
 
     repositories {
