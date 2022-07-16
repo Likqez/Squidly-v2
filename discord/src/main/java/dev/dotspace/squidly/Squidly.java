@@ -1,5 +1,7 @@
 package dev.dotspace.squidly;
 
+import dev.dotspace.squidly.arango.DatabaseCollection;
+import dev.dotspace.squidly.arango.DatabaseHandler;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -37,6 +39,7 @@ public class Squidly {
         .setActivity(Activity.watching("the magistrate"))
         .setAutoReconnect(true);
 
+    DatabaseHandler.createCollections();
 
     new SquildyBot(jdaBuilder);
 

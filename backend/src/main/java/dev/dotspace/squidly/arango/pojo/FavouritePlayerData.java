@@ -1,5 +1,5 @@
 package dev.dotspace.squidly.arango.pojo;
 
-public record FavouritePlayerData(String identifier, long playerid) {
+public record FavouritePlayerData(String identifier, long playerid, String playername) {
 
 }
