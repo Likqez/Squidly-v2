@@ -14,12 +14,9 @@ public abstract class BasicSlashCommand {
   private final String description;
   private final List<OptionData> optionData = new ArrayList<>();
 
-  private final EmbedFactory<?> embedFactory;
-
-  public BasicSlashCommand(String name, String description, EmbedFactory<?> embedFactory) {
+  public BasicSlashCommand(String name, String description) {
     this.name = name;
     this.description = description;
-    this.embedFactory = embedFactory;
   }
 
   public void addOption(OptionData... option) {
@@ -36,10 +33,6 @@ public abstract class BasicSlashCommand {
 
   public List<OptionData> optionData() {
     return optionData;
-  }
-
-  public EmbedFactory<?> embedFactory() {
-    return embedFactory;
   }
 
   public SlashCommandData toCommandData() {

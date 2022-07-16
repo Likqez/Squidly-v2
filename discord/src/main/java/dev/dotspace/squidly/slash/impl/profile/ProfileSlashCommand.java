@@ -15,7 +15,7 @@ public class ProfileSlashCommand extends BasicSlashCommand {
   public static final String DESC = "Retrieves generic information about a player";
 
   public ProfileSlashCommand() {
-    super(NAME, DESC, new ProfileEmbedFactory());
+    super(NAME, DESC);
     addOption(new OptionData(OptionType.STRING, "player", "playername/gamertag or saved identifier"));
   }
 
