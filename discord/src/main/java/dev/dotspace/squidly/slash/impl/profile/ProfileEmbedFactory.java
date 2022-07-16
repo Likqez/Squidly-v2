@@ -15,7 +15,7 @@ import java.util.Objects;
 public class ProfileEmbedFactory implements EmbedFactory<GetPlayerResponse> {
 
   public MessageEmbed createEmbed(GetPlayerResponse response) {
-    final String playername = selectFirstNonNull(response.name(), response.hzPlayerName(), response.hzGamerTag());
+    final String playername = selectFirstNonNull(response.hzPlayerName(), response.name(), response.hzGamerTag());
     final String avatar = selectFirstNonNull(response.avatarUrl(), DEFAULT_AVATAR_URL);
     final String title = response.title() != null ? response.title() : "";
 
