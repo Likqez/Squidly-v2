@@ -9,8 +9,6 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nullable;
 import java.awt.*;
 
-import static dev.dotspace.squidly.response.APIConstantProvider.MAX_FAVOURITE_PLAYERS;
-
 public class SettingsEmbedFactory implements EmbedFactory<Object> { //TODO Change type
 
   @Override
@@ -19,11 +17,11 @@ public class SettingsEmbedFactory implements EmbedFactory<Object> { //TODO Chang
   }
 
   public MessageEmbed createSavedAddEmbed(@NotNull SquidlyUser user) {
-    var success = ! user.limitReached();
+    var success = ! user.favouriteLimitReached();
     return new EmbedBuilder()
         .setColor(success ? Color.GREEN : Color.RED)
         .setTitle("/settings saves add")
-        .appendDescription(success ? "User successfully saved to favourites." : "User couldn't be saved to favourites.\nYou cannot save more than %d players".formatted(MAX_FAVOURITE_PLAYERS))
+        .appendDescription(success ? "User successfully saved to favourites." : "User couldn't be saved to favourites.\nYou cannot save more than %d players".formatted(user.favouriteLimit()))
         .addField("Saved:", formatFavsNo(user), true)
         .addField("", formatFavsIdent(user), true)
         .addField("", formatFavsNames(user), true)

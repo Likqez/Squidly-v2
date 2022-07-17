@@ -8,7 +8,6 @@ import dev.dotspace.squidly.arango.pojo.SquidlyUser;
 import java.io.IOException;
 
 import static dev.dotspace.squidly.arango.DatabaseCollection.USERS;
-import static dev.dotspace.squidly.response.APIConstantProvider.MAX_FAVOURITE_PLAYERS;
 
 public class DatabaseHandler {
 
@@ -34,7 +33,7 @@ public class DatabaseHandler {
               }
             IN @@coll
             RETURN NEW
-            """.formatted(MAX_FAVOURITE_PLAYERS, MAX_FAVOURITE_PLAYERS),
+            """.formatted(user.favouriteLimit(), user.favouriteLimit()),
         new MapBuilder()
             .put("userid", user.userid())
             .put("fav", fav)
