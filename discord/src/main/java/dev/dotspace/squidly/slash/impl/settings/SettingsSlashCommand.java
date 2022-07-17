@@ -52,7 +52,7 @@ public class SettingsSlashCommand extends AdvancedSlashCommand {
               .value()
               .ifPresent(getPlayerRes -> {
                 var response = DatabaseHandler.saveUser(new SquidlyUser(userid, List.of(new FavouritePlayerData(identifier, getPlayerRes.id(), playername))), new FavouritePlayerData(identifier, getPlayerRes.id(), playername));
-                interactionHook.editOriginalEmbeds(new SettingsEmbedFactory().createSavedAddEmbed(response != null, response)).queue();
+                interactionHook.editOriginalEmbeds(new SettingsEmbedFactory().createSavedAddEmbed(response)).queue();
               });
         });
         case "remove" -> {

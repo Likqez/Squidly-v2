@@ -4,8 +4,12 @@ import dev.dotspace.squidly.arango.pojo.SquidlyUser;
 import dev.dotspace.squidly.util.EmbedFactory;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nullable;
 import java.awt.*;
+
+import static dev.dotspace.squidly.response.APIConstantProvider.MAX_FAVOURITE_PLAYERS;
 
 public class SettingsEmbedFactory implements EmbedFactory<Object> { //TODO Change type
 
@@ -14,20 +18,19 @@ public class SettingsEmbedFactory implements EmbedFactory<Object> { //TODO Chang
     return null;
   }
 
-  public MessageEmbed createSavedAddEmbed(boolean success, SquidlyUser user) {
+  public MessageEmbed createSavedAddEmbed(@NotNull SquidlyUser user) {
+    var success = ! user.limitReached();
     return new EmbedBuilder()
         .setColor(success ? Color.GREEN : Color.RED)
         .setTitle("/settings saves add")
-        .appendDescription(success ? "User successfully saved to favourites." : "User couldn't be saved to favourites.")
+        .appendDescription(success ? "User successfully saved to favourites." : "User couldn't be saved to favourites.\nYou cannot save more than %d players".formatted(MAX_FAVOURITE_PLAYERS))
         .addField("Saved:", formatFavsNo(user), true)
         .addField("", formatFavsIdent(user), true)
         .addField("", formatFavsNames(user), true)
         .build();
   }
 
-  private String formatFavsNo(SquidlyUser user) {
-    if (user == null)
-      return "";
+  private String formatFavsNo(@NotNull SquidlyUser user) {
     StringBuilder stringBuilder = new StringBuilder();
     for (int i = 0; i < user.favourites().size(); i++) {
       var no = switch (i + 1) {
@@ -43,14 +46,14 @@ public class SettingsEmbedFactory implements EmbedFactory<Object> { //TODO Chang
 
     return stringBuilder.toString();
   }
-  private String formatFavsIdent(SquidlyUser user) {
-    if (user == null)
-      return "";
+
+  private String formatFavsIdent(@NotNull SquidlyUser user) {
     StringBuilder stringBuilder = new StringBuilder();
     user.favourites().forEach(fav -> stringBuilder.append("**").append(fav.identifier()).append("**\n"));
     return stringBuilder.toString();
   }
-  private String formatFavsNames(SquidlyUser user) {
+
+  private String formatFavsNames(@Nullable SquidlyUser user) {
     if (user == null)
       return "";
     StringBuilder stringBuilder = new StringBuilder();

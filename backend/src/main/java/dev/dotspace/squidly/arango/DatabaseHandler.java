@@ -8,6 +8,7 @@ import dev.dotspace.squidly.arango.pojo.SquidlyUser;
 import java.io.IOException;
 
 import static dev.dotspace.squidly.arango.DatabaseCollection.USERS;
+import static dev.dotspace.squidly.response.APIConstantProvider.MAX_FAVOURITE_PLAYERS;
 
 public class DatabaseHandler {
 
@@ -26,11 +27,14 @@ public class DatabaseHandler {
     try (ArangoCursor<SquidlyUser> res = database.query(
         """
             UPSERT {user_id: @userid}
-            INSERT @doc
-            UPDATE {favourite_players: LENGTH(OLD.favourite_players) < 5 ? APPEND(OLD.favourite_players, @fav) : OLD.favourite_players}
+              INSERT @doc
+              UPDATE {
+              favourite_players: LENGTH(OLD.favourite_players) < %d ? APPEND(OLD.favourite_players, @fav) : OLD.favourite_players,
+              favourite_limit_reaced:  LENGTH(OLD.favourite_players) >= %d
+              }
             IN @@coll
             RETURN NEW
-            """,
+            """.formatted(MAX_FAVOURITE_PLAYERS, MAX_FAVOURITE_PLAYERS),
         new MapBuilder()
             .put("userid", user.userid())
             .put("fav", fav)
