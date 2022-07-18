@@ -43,7 +43,7 @@ public class SettingsSlashCommand extends AdvancedSlashCommand {
   public static void onExecute(@NotNull SlashCommandInteractionEvent event) {
     if (event.getSubcommandGroup() != null && event.getSubcommandGroup().equals("saves"))
       switch (event.getSubcommandName()) {
-        case "add" -> event.deferReply().queue(interactionHook -> {
+        case "add" -> event.deferReply(true).queue(interactionHook -> {
           var playername = event.getOption("player").getAsString();
           var identifier = event.getOption("identifier") != null ? event.getOption("identifier").getAsString() : "me";
           var userid = event.getUser().getId();
