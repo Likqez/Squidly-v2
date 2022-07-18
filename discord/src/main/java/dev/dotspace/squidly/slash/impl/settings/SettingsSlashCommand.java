@@ -13,6 +13,7 @@ import net.dv8tion.jda.api.interactions.commands.build.SubcommandGroupData;
 import net.dv8tion.jda.internal.interactions.CommandDataImpl;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SettingsSlashCommand extends AdvancedSlashCommand {
@@ -41,6 +42,8 @@ public class SettingsSlashCommand extends AdvancedSlashCommand {
   }
 
   public static void onExecute(@NotNull SlashCommandInteractionEvent event) {
+    var embedFactory = new SettingsEmbedFactory();
+
     if (event.getSubcommandGroup() != null && event.getSubcommandGroup().equals("saves"))
       switch (event.getSubcommandName()) {
         case "add" -> event.deferReply(true).queue(interactionHook -> {
@@ -48,17 +51,23 @@ public class SettingsSlashCommand extends AdvancedSlashCommand {
           var identifier = event.getOption("identifier") != null ? event.getOption("identifier").getAsString() : "me";
           var userid = event.getUser().getId();
 
-          var embedFactory = new SettingsEmbedFactory();
-
           RequestManager.getPlayer(playername)
               .value()
               .ifPresentOrElse(getPlayerRes -> {
                 var response = DatabaseHandler.saveUser(new SquidlyUser(userid, List.of(new FavouritePlayerData(identifier, getPlayerRes.id(), playername))), new FavouritePlayerData(identifier, getPlayerRes.id(), playername));
                 interactionHook.editOriginalEmbeds(embedFactory.createSavedAddEmbed(response)).queue();
-              }, () -> interactionHook.editOriginalEmbeds(embedFactory.createPlayerNotFoundEmbed(event.getCommandString(), playername)).queue());
+              }, () -> interactionHook.editOriginalEmbeds(embedFactory.createNotFoundEmbed(event.getCommandString(), playername)).queue());
         });
-        case "remove" -> {
-        }
+        case "remove" -> event.deferReply(true).queue(interactionHook -> {
+          var identifier = event.getOption("save") != null ? event.getOption("save").getAsString() : "me";
+          var userid = event.getUser().getId();
+
+          if (! identifier.equals("0") && ! identifier.equals("-1")) {
+            var result = DatabaseHandler.removeFavourite(new SquidlyUser(userid, new ArrayList<>()), identifier);
+            interactionHook.editOriginalEmbeds(embedFactory.createSavedRemoveEmbed(result)).queue();
+          } else
+            interactionHook.editOriginalEmbeds(embedFactory.createNotFoundEmbed(event.getCommandString(), identifier)).queue();
+        });
         case "show" -> {
         }
 

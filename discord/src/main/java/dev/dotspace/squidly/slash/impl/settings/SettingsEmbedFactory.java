@@ -33,7 +33,7 @@ public class SettingsEmbedFactory implements EmbedFactory<Object> { //TODO Chang
   private String formatFavsNo(@NotNull SquidlyUser user) {
     StringBuilder stringBuilder = new StringBuilder();
     for (int i = 0; i < user.favourites().size(); i++) {
-      var no = StringUtils.digitToEmoji(i + 1);
+      var no = StringUtils.digitToEmoji(i);
       stringBuilder.append(no).append("\n");
     }
 
@@ -56,14 +56,25 @@ public class SettingsEmbedFactory implements EmbedFactory<Object> { //TODO Chang
 
   /* /setting save remove */
 
+  public MessageEmbed createSavedRemoveEmbed(@NotNull SquidlyUser user) {
+    return new EmbedBuilder()
+        .setColor(Color.GREEN)
+        .setTitle("/settings saves remove")
+        .appendDescription("Favourites successfully updated.")
+        .addField("Saved:", formatFavsNo(user), true)
+        .addField("", formatFavsIdent(user), true)
+        .addField("", formatFavsNames(user), true)
+        .build();
+  }
+
   /* /setting save show */
 
   /* Player no found error */
-  public MessageEmbed createPlayerNotFoundEmbed(String command, String input) {
+  public MessageEmbed createNotFoundEmbed(String command, String input) {
     return new EmbedBuilder()
         .setColor(Color.RED)
         .setTitle(command)
-        .appendDescription("The player ``%s`` could not be found. Please check for typos.".formatted(input))
+        .appendDescription("``%s`` could not be found. Please check for typos.".formatted(input))
         .build();
   }
 }

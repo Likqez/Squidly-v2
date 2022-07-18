@@ -76,4 +76,41 @@ public class DatabaseHandler {
 
     return 0;
   }
+
+  public static SquidlyUser removeFavourite(SquidlyUser user, String identifier) {
+    var database = new DatabaseSupplier().get();
+
+    try (ArangoCursor<SquidlyUser> res = database.query(
+        """
+            LET doc = DOCUMENT(@@coll, @userid)
+                      LET toRemove = (
+                      FOR fav in doc.favourite_players
+                      FILTER KEEP(fav,"identifier").identifier == @identifier OR (POSITION(doc.favourite_players, fav, true) == ABS(@identifier)-1 AND ABS(@identifier) > 0)
+                      RETURN fav
+                      )
+                      
+                      LET position = POSITION(doc.favourite_players, toRemove[0], true)
+
+                      UPSERT {user_id: @userid}
+                      INSERT @doc
+                      UPDATE {
+                      favourite_players: REMOVE_NTH(OLD.favourite_players, position),
+                      favourite_limit_reaced:  LENGTH(OLD.favourite_players) >= %d
+                      }
+                      IN @@coll
+                      RETURN NEW
+            """.formatted(user.favouriteLimit()),
+        new MapBuilder()
+            .put("@coll", USERS.colname())
+            .put("userid", user.userid())
+            .put("identifier", identifier)
+            .put("doc", user)
+            .get(), SquidlyUser.class)) {
+      if (res.hasNext())
+        return res.next();
+    } catch (IOException ex) {
+      ex.printStackTrace();
+    }
+    return null;
+  }
 }
