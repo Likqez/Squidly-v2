@@ -2,6 +2,7 @@ package dev.dotspace.squidly.slash.impl.settings;
 
 import dev.dotspace.squidly.arango.pojo.SquidlyUser;
 import dev.dotspace.squidly.util.EmbedFactory;
+import dev.dotspace.squidly.util.StringUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.jetbrains.annotations.NotNull;
@@ -16,6 +17,7 @@ public class SettingsEmbedFactory implements EmbedFactory<Object> { //TODO Chang
     return null;
   }
 
+  /* /settings saves add */
   public MessageEmbed createSavedAddEmbed(@NotNull SquidlyUser user) {
     var success = ! user.favouriteLimitReached();
     return new EmbedBuilder()
@@ -31,14 +33,7 @@ public class SettingsEmbedFactory implements EmbedFactory<Object> { //TODO Chang
   private String formatFavsNo(@NotNull SquidlyUser user) {
     StringBuilder stringBuilder = new StringBuilder();
     for (int i = 0; i < user.favourites().size(); i++) {
-      var no = switch (i + 1) {
-        case 1 -> ":one:";
-        case 2 -> ":two:";
-        case 3 -> ":three:";
-        case 4 -> ":four:";
-        case 5 -> ":five:";
-        default -> ":hash:";
-      };
+      var no = StringUtils.digitToEmoji(i + 1);
       stringBuilder.append(no).append("\n");
     }
 
@@ -57,5 +52,18 @@ public class SettingsEmbedFactory implements EmbedFactory<Object> { //TODO Chang
     StringBuilder stringBuilder = new StringBuilder();
     user.favourites().forEach(fav -> stringBuilder.append("`").append(fav.playername()).append("`\n"));
     return stringBuilder.toString();
+  }
+
+  /* /setting save remove */
+
+  /* /setting save show */
+
+  /* Player no found error */
+  public MessageEmbed createPlayerNotFoundEmbed(String command, String input) {
+    return new EmbedBuilder()
+        .setColor(Color.RED)
+        .setTitle(command)
+        .appendDescription("The player ``%s`` could not be found. Please check for typos.".formatted(input))
+        .build();
   }
 }

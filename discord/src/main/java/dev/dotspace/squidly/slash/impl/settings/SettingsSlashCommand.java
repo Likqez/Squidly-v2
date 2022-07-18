@@ -48,12 +48,14 @@ public class SettingsSlashCommand extends AdvancedSlashCommand {
           var identifier = event.getOption("identifier") != null ? event.getOption("identifier").getAsString() : "me";
           var userid = event.getUser().getId();
 
+          var embedFactory = new SettingsEmbedFactory();
+
           RequestManager.getPlayer(playername)
               .value()
-              .ifPresent(getPlayerRes -> {
+              .ifPresentOrElse(getPlayerRes -> {
                 var response = DatabaseHandler.saveUser(new SquidlyUser(userid, List.of(new FavouritePlayerData(identifier, getPlayerRes.id(), playername))), new FavouritePlayerData(identifier, getPlayerRes.id(), playername));
-                interactionHook.editOriginalEmbeds(new SettingsEmbedFactory().createSavedAddEmbed(response)).queue();
-              });
+                interactionHook.editOriginalEmbeds(embedFactory.createSavedAddEmbed(response)).queue();
+              }, () -> interactionHook.editOriginalEmbeds(embedFactory.createPlayerNotFoundEmbed(event.getCommandString(), playername)).queue());
         });
         case "remove" -> {
         }

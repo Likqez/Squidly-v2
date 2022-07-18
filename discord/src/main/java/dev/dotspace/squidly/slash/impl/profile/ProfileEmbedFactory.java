@@ -9,8 +9,8 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
-import java.util.Arrays;
-import java.util.Objects;
+
+import static dev.dotspace.squidly.util.StringUtils.selectFirstNonNull;
 
 public class ProfileEmbedFactory implements EmbedFactory<GetPlayerResponse> {
 
@@ -127,14 +127,6 @@ public class ProfileEmbedFactory implements EmbedFactory<GetPlayerResponse> {
         response.platform(),
         response.region()
     );
-  }
-
-
-  private String selectFirstNonNull(String first, String... strings) {
-    if (first != null) return first;
-    if (strings.length == 0) throw new NullPointerException("Only null values specified");
-
-    return Arrays.stream(strings).filter(Objects::nonNull).findFirst().orElseThrow();
   }
 
 }
