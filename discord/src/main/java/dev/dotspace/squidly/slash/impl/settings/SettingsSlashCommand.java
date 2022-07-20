@@ -25,12 +25,12 @@ public class SettingsSlashCommand extends AdvancedSlashCommand {
       .addSubcommandGroups(
           new SubcommandGroupData("saves", "Saved player menu")
               .addSubcommands(
-                  new SubcommandData("show", "Display all saved players"),
-                  new SubcommandData("add", "Add player to saved players")
+                  new SubcommandData("show", "Display all saved favourites"),
+                  new SubcommandData("add", "Add player to saved favourites")
                       .addOption(OptionType.STRING, "player", "playername / gamertag", true)
                       .addOption(OptionType.STRING, "identifier", "symbol/emoji to identify user"),
-                  new SubcommandData("remove", "Remove player from saved players")
-                      .addOption(OptionType.STRING, "save", "saved identifier", true)
+                  new SubcommandData("remove", "Remove player from saved favourites")
+                      .addOption(OptionType.STRING, "save", "No. of saved identifier/identifier", true)
               )
       )
       .addSubcommands(

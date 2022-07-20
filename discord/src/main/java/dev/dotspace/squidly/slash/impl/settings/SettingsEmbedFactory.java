@@ -24,9 +24,10 @@ public class SettingsEmbedFactory implements EmbedFactory<Object> { //TODO Chang
         .setColor(success ? Color.GREEN : Color.RED)
         .setTitle("/settings saves add")
         .appendDescription(success ? "User successfully saved to favourites." : "User couldn't be saved to favourites.\nYou cannot save more than %d players".formatted(user.favouriteLimit()))
-        .addField("Saved:", formatFavsNo(user), true)
-        .addField("", formatFavsIdent(user), true)
-        .addField("", formatFavsNames(user), true)
+        .appendDescription("\n\n**Now saved favourites:**")
+        .addField("#No.", formatFavsNo(user), true)
+        .addField("Ident.", formatFavsIdent(user), true)
+        .addField("Username", formatFavsNames(user), true)
         .build();
   }
 
@@ -61,9 +62,10 @@ public class SettingsEmbedFactory implements EmbedFactory<Object> { //TODO Chang
         .setColor(Color.GREEN)
         .setTitle("/settings saves remove")
         .appendDescription("Favourites successfully updated.")
-        .addField("Saved:", formatFavsNo(user), true)
-        .addField("", formatFavsIdent(user), true)
-        .addField("", formatFavsNames(user), true)
+        .appendDescription("\n\n**Now saved favourites:**")
+        .addField("#No.", formatFavsNo(user), true)
+        .addField("Ident.", formatFavsIdent(user), true)
+        .addField("Username", formatFavsNames(user), true)
         .build();
   }
 
