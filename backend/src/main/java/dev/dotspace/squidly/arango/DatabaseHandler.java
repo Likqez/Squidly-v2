@@ -28,12 +28,12 @@ public class DatabaseHandler {
             UPSERT {user_id: @userid}
               INSERT @doc
               UPDATE {
-              favourite_players: LENGTH(OLD.favourite_players) < %d ? APPEND(OLD.favourite_players, @fav) : OLD.favourite_players,
-              favourite_limit_reaced:  LENGTH(OLD.favourite_players) >= %d
+              favourite_players: LENGTH(OLD.favourite_players) < OLD.favourite_limit ? APPEND(OLD.favourite_players, @fav) : OLD.favourite_players,
+              favourite_limit_reached:  LENGTH(OLD.favourite_players) >= OLD.favourite_limit
               }
             IN @@coll
             RETURN NEW
-            """.formatted(user.favouriteLimit(), user.favouriteLimit()),
+            """,
         new MapBuilder()
             .put("userid", user.userid())
             .put("fav", fav)
@@ -95,11 +95,11 @@ public class DatabaseHandler {
                       INSERT @doc
                       UPDATE {
                       favourite_players: REMOVE_NTH(OLD.favourite_players, position),
-                      favourite_limit_reaced:  LENGTH(OLD.favourite_players) >= %d
+                      favourite_limit_reached:  LENGTH(OLD.favourite_players) >= OLD.favourite_limit
                       }
                       IN @@coll
                       RETURN NEW
-            """.formatted(user.favouriteLimit()),
+            """,
         new MapBuilder()
             .put("@coll", USERS.colname())
             .put("userid", user.userid())

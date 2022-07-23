@@ -9,7 +9,7 @@ public record SquidlyUser(
     @JsonProperty("user_id") String userid,
     @JsonProperty("favourite_players") List<FavouritePlayerData> favourites,
     @JsonProperty("favourite_limit") int favouriteLimit,
-    @JsonProperty("favourite_limit_reaced") boolean favouriteLimitReached
+    @JsonProperty("favourite_limit_reached") boolean favouriteLimitReached
 ) {
 
   public SquidlyUser(String userid, List<FavouritePlayerData> favourites) {
