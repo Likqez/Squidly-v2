@@ -13,7 +13,6 @@ import net.dv8tion.jda.api.interactions.commands.build.SubcommandGroupData;
 import net.dv8tion.jda.internal.interactions.CommandDataImpl;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class SettingsSlashCommand extends AdvancedSlashCommand {
@@ -65,7 +64,7 @@ public class SettingsSlashCommand extends AdvancedSlashCommand {
           var userid = event.getUser().getId();
 
           if (! identifier.equals("0") && ! identifier.equals("-1")) {
-            var result = DatabaseHandler.removeFavourite(new SquidlyUser(userid, new ArrayList<>()), identifier);
+            var result = DatabaseHandler.removeFavourite(new SquidlyUser(userid), identifier);
             interactionHook.editOriginalEmbeds(embedFactory.createSavedRemoveEmbed(result)).queue();
           } else
             interactionHook.editOriginalEmbeds(embedFactory.createNotFoundEmbed(event.getCommandString(), identifier)).queue();

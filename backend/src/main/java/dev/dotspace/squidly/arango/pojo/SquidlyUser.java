@@ -2,6 +2,7 @@ package dev.dotspace.squidly.arango.pojo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.Collections;
 import java.util.List;
 
 public record SquidlyUser(
@@ -14,5 +15,9 @@ public record SquidlyUser(
 
   public SquidlyUser(String userid, List<FavouritePlayerData> favourites) {
     this(userid, userid, favourites,5, false);
+  }
+
+  public SquidlyUser(String userid) {
+    this(userid, userid, Collections.emptyList(), 5, false);
   }
 }
