@@ -1,5 +1,6 @@
 package dev.dotspace.squidly.slash;
 
+import dev.dotspace.squidly.slash.impl.match.MatchSlashCommand;
 import dev.dotspace.squidly.slash.impl.profile.ProfileSlashCommand;
 import dev.dotspace.squidly.slash.impl.settings.SettingsSlashCommand;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
@@ -13,7 +14,8 @@ public class SlashCommandList extends ArrayList<SlashCommandData> {
     super();
     this.addAll(
         new ProfileSlashCommand().toCommandData(),
-        new SettingsSlashCommand().slashCommandData()
+        new SettingsSlashCommand().slashCommandData(),
+        new MatchSlashCommand().toCommandData()
     );
   }
 

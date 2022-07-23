@@ -20,9 +20,9 @@ public class ProfileSlashCommand extends BasicSlashCommand {
 
   public static void onExecute(@NotNull SlashCommandInteractionEvent event) {
     var playername = event.getOption("player") == null ? "me" : event.getOption("player").getAsString();
-    var favourite = DatabaseHandler.getFavourite(event.getUser().getId(), playername);
+    var favPlayerId = DatabaseHandler.getFavourite(event.getUser().getId(), playername);
 
-    RequestManager.getPlayer(favourite > 0 ? String.valueOf(favourite) : playername).value().ifPresentOrElse(getPlayerResponse -> event.deferReply().queue(interactionHook -> {
+    RequestManager.getPlayer(favPlayerId > 0 ? String.valueOf(favPlayerId) : playername).value().ifPresentOrElse(getPlayerResponse -> event.deferReply().queue(interactionHook -> {
       var embed = new ProfileEmbedFactory().createEmbed(getPlayerResponse);
 
       interactionHook.editOriginalEmbeds(embed).queue();
