@@ -15,6 +15,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+import static dev.dotspace.squidly.util.StringUtils.selectFirstNonNull;
+
 public class SettingsSlashCommand extends AdvancedSlashCommand {
 
   public static final String NAME = "settings";
@@ -47,16 +49,17 @@ public class SettingsSlashCommand extends AdvancedSlashCommand {
       switch (event.getSubcommandName()) {
 
         case "add" -> event.deferReply(true).queue(interactionHook -> {
-          var playername = event.getOption("player").getAsString();
+          var inputName = event.getOption("player").getAsString();
           var identifier = event.getOption("identifier") != null ? event.getOption("identifier").getAsString() : "me";
           var userid = event.getUser().getId();
 
-          RequestManager.getPlayer(playername)
+          RequestManager.getPlayer(inputName)
               .value()
               .ifPresentOrElse(getPlayerRes -> {
+                var playername = selectFirstNonNull(getPlayerRes.hzPlayerName(), getPlayerRes.name(), getPlayerRes.hzGamerTag());
                 var response = DatabaseHandler.saveUser(new SquidlyUser(userid, List.of(new FavouritePlayerData(identifier, getPlayerRes.id(), playername))), new FavouritePlayerData(identifier, getPlayerRes.id(), playername));
                 interactionHook.editOriginalEmbeds(embedFactory.createSavedAddEmbed(response)).queue();
-              }, () -> interactionHook.editOriginalEmbeds(embedFactory.createNotFoundEmbed(event.getCommandString(), playername)).queue());
+              }, () -> interactionHook.editOriginalEmbeds(embedFactory.createNotFoundEmbed(event.getCommandString(), inputName)).queue());
         });
 
         case "remove" -> event.deferReply(true).queue(interactionHook -> {
