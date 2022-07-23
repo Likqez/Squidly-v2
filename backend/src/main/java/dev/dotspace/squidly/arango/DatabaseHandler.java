@@ -90,11 +90,12 @@ public class DatabaseHandler {
                       )
                       
                       LET position = POSITION(doc.favourite_players, toRemove[0], true)
+                      LET posToRemove = position != -1 ? position : 999
 
                       UPSERT {user_id: @userid}
                       INSERT @doc
                       UPDATE {
-                      favourite_players: REMOVE_NTH(OLD.favourite_players, position),
+                      favourite_players: REMOVE_NTH(OLD.favourite_players, posToRemove),
                       favourite_limit_reached:  LENGTH(OLD.favourite_players) >= OLD.favourite_limit
                       }
                       IN @@coll
