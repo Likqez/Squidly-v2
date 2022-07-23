@@ -71,8 +71,18 @@ public class SettingsEmbedFactory implements EmbedFactory<Object> { //TODO Chang
 
   /* /setting save show */
 
+  public MessageEmbed createShowFavsEmbed(@NotNull String command, @NotNull SquidlyUser user) {
+    return new EmbedBuilder()
+        .setColor(Color.GREEN)
+        .setTitle("Your saved favourites:")
+        .addField("#No.", formatFavsNo(user), true)
+        .addField("Ident.", formatFavsIdent(user), true)
+        .addField("Username", formatFavsNames(user), true)
+        .build();
+  }
+
   /* Player no found error */
-  public MessageEmbed createNotFoundEmbed(String command, String input) {
+  public MessageEmbed createNotFoundEmbed(@NotNull String command, @NotNull String input) {
     return new EmbedBuilder()
         .setColor(Color.RED)
         .setTitle(command)

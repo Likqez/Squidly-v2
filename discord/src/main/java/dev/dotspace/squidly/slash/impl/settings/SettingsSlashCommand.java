@@ -46,6 +46,7 @@ public class SettingsSlashCommand extends AdvancedSlashCommand {
 
     if (event.getSubcommandGroup() != null && event.getSubcommandGroup().equals("saves"))
       switch (event.getSubcommandName()) {
+
         case "add" -> event.deferReply(true).queue(interactionHook -> {
           var playername = event.getOption("player").getAsString();
           var identifier = event.getOption("identifier") != null ? event.getOption("identifier").getAsString() : "me";
@@ -58,6 +59,7 @@ public class SettingsSlashCommand extends AdvancedSlashCommand {
                 interactionHook.editOriginalEmbeds(embedFactory.createSavedAddEmbed(response)).queue();
               }, () -> interactionHook.editOriginalEmbeds(embedFactory.createNotFoundEmbed(event.getCommandString(), playername)).queue());
         });
+
         case "remove" -> event.deferReply(true).queue(interactionHook -> {
           var identifier = event.getOption("save") != null ? event.getOption("save").getAsString() : "me";
           var userid = event.getUser().getId();
@@ -68,10 +70,15 @@ public class SettingsSlashCommand extends AdvancedSlashCommand {
           } else
             interactionHook.editOriginalEmbeds(embedFactory.createNotFoundEmbed(event.getCommandString(), identifier)).queue();
         });
-        case "show" -> {
-        }
 
-
+        case "show" -> event.deferReply(true).queue(interactionHook -> {
+          var userid = event.getUser().getId();
+          var response = DatabaseHandler.getUser(userid);
+          if (response == null)
+            interactionHook.editOriginal("Internal Error.").queue();
+          else
+            interactionHook.editOriginalEmbeds(embedFactory.createShowFavsEmbed(event.getCommandString(), response)).queue();
+        });
       }
 
   }
