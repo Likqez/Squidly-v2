@@ -57,7 +57,7 @@ public class SettingsSlashCommand extends AdvancedSlashCommand {
               .value()
               .ifPresentOrElse(getPlayerRes -> {
                 var playername = selectFirstNonNull(getPlayerRes.hzPlayerName(), getPlayerRes.name(), getPlayerRes.hzGamerTag());
-                var response = DatabaseHandler.saveUser(new SquidlyUser(userid, List.of(new FavouritePlayerData(identifier, getPlayerRes.id(), playername))), new FavouritePlayerData(identifier, getPlayerRes.id(), playername));
+                var response = DatabaseHandler.saveUser(new SquidlyUser(userid, List.of(new FavouritePlayerData(identifier, getPlayerRes.activePlayerId(), playername))), new FavouritePlayerData(identifier, getPlayerRes.activePlayerId(), playername));
                 interactionHook.editOriginalEmbeds(embedFactory.createSavedAddEmbed(response)).queue();
               }, () -> interactionHook.editOriginalEmbeds(embedFactory.createNotFoundEmbed(event.getCommandString(), inputName)).queue());
         });
