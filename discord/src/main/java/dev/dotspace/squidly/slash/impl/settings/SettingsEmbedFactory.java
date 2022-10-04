@@ -71,13 +71,21 @@ public class SettingsEmbedFactory implements EmbedFactory<Object> { //TODO Chang
 
   /* /setting save show */
 
-  public MessageEmbed createShowFavsEmbed(@NotNull String command, @NotNull SquidlyUser user) {
+  public MessageEmbed createShowFavsEmbed(@NotNull SquidlyUser user, boolean hasFriends) {
+    if (hasFriends)
+      return new EmbedBuilder()
+          .setColor(Color.GREEN)
+          .setTitle("Your saved favourites:")
+          .addField("#No.", formatFavsNo(user), true)
+          .addField("Ident.", formatFavsIdent(user), true)
+          .addField("Username", formatFavsNames(user), true)
+          .build();
+
     return new EmbedBuilder()
-        .setColor(Color.GREEN)
+        .setColor(Color.ORANGE)
         .setTitle("Your saved favourites:")
-        .addField("#No.", formatFavsNo(user), true)
-        .addField("Ident.", formatFavsIdent(user), true)
-        .addField("Username", formatFavsNames(user), true)
+        .setImage(NO_FRIENDS_GIF)
+        .setDescription("```Seems like theres no one here :P```")
         .build();
   }
 
