@@ -33,8 +33,14 @@ public class HttpRequestFactory {
   }
 
   public HttpRequestFactory addPath(String path) {
-    if (!this.path.endsWith("/")) this.path += "/";
+    if (! this.path.endsWith("/")) this.path += "/";
     this.path += path;
+    return this;
+  }
+
+  public HttpRequestFactory addPath(int path) {
+    if (! this.path.endsWith("/")) this.path += "/";
+    this.path += String.valueOf(path);
     return this;
   }
 

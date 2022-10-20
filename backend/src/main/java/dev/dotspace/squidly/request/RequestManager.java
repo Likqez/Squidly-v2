@@ -6,9 +6,11 @@ import dev.dotspace.squidly.response.JsonResponseAnalyzer;
 import dev.dotspace.squidly.response.analysis.DataUsageResponseAnalyzer;
 import dev.dotspace.squidly.response.analysis.GetPlayerIdByNameResponseAnalyzer;
 import dev.dotspace.squidly.response.analysis.GetPlayerResponseAnalyzer;
+import dev.dotspace.squidly.response.analysis.GetPlayerStatusResponseAnalyzer;
 import dev.dotspace.squidly.response.model.DataUsageResponse;
 import dev.dotspace.squidly.response.model.GetPlayerIdByNameResponse;
 import dev.dotspace.squidly.response.model.GetPlayerResponse;
+import dev.dotspace.squidly.response.model.GetPlayerStatusResponse;
 import dev.dotspace.squidly.session.SessionStore;
 import dev.dotspace.squidly.session.SessionSupplier;
 import dev.dotspace.squidly.session.SignatureFactory;
@@ -115,6 +117,33 @@ public class RequestManager {
       return response.thenApplyAsync(HttpResponse::body)
           .thenApplyAsync(JsonResponseAnalyzer::toJsonNode)
           .thenApplyAsync(new GetPlayerResponseAnalyzer()::analyse)
+          .get();
+    } catch (InterruptedException | ExecutionException e) {
+      e.printStackTrace();
+    }
+
+    return AnalysisResult.ERROR;
+  }
+
+  public static AnalysisResult<GetPlayerStatusResponse> getPlayerStatus(int playerId) {
+    var ss = new SessionSupplier();
+    var credentials = ss.getCredentialPair();
+    var sessionStore = ss.get();
+    var cmdSignature = SignatureFactory.getSignature(ss.getCredentialPair(), "getplayerstatus");
+
+    var response = new HttpRequestFactory(APIEndpoint.PALADINS)
+        .addPath("getplayerstatusjson")
+        .addPath(credentials.user())
+        .addPath(cmdSignature)
+        .addPath(sessionStore.session())
+        .addPath(SignatureFactory.getTimestamp())
+        .addPath(playerId)
+        .asyncGET();
+
+    try {
+      return response.thenApplyAsync(HttpResponse::body)
+          .thenApplyAsync(JsonResponseAnalyzer::toJsonNode)
+          .thenApplyAsync(new GetPlayerStatusResponseAnalyzer()::analyse)
           .get();
     } catch (InterruptedException | ExecutionException e) {
       e.printStackTrace();
