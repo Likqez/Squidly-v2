@@ -95,9 +95,9 @@ public class ProfileEmbedFactory implements EmbedFactory<GetPlayerResponse> {
     var loginDiffMins = loginDiff.toMinutesPart();
 
     String lastLoginDuration = "%s%s%sago".formatted(
-        (loginDiffDays > 0 ? loginDiffDays + "d, " : ""),
+        (loginDiffDays > 0 ? loginDiffDays + "d " : ""),
         (loginDiffHours > 0 ? loginDiffHours + "h " : ""),
-        (loginDiffMins > 0 ? "& " + loginDiffMins + "m " : "")
+        (loginDiffMins > 0 ? loginDiffMins + "m " : "0m ")
     );
 
     var existingDiff = Duration.between(response.createdDateTime(), Instant.now().atZone(ZoneId.of("UTC")));
