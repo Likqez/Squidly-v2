@@ -1,6 +1,8 @@
 package dev.dotspace.squidly.response.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import dev.dotspace.squidly.response.json.YesNoBooleanDeserializer;
 
 public record GetPlayerIdByNameResponse(
     @JsonProperty("Name")
@@ -12,7 +14,8 @@ public record GetPlayerIdByNameResponse(
     @JsonProperty("portal_id")
     String portalId,
     @JsonProperty("privacy_flag")
-    String privacyFlag,
+    @JsonDeserialize(using = YesNoBooleanDeserializer.class)
+    boolean privacyFlag,
     @JsonProperty("ret_msg")
     String msg
 ) {

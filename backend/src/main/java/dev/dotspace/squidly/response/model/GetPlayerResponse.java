@@ -2,7 +2,9 @@ package dev.dotspace.squidly.response.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import dev.dotspace.squidly.response.APIConstantProvider;
+import dev.dotspace.squidly.response.json.YesNoBooleanDeserializer;
 
 import java.time.ZonedDateTime;
 
@@ -75,6 +77,9 @@ public record GetPlayerResponse(
     String hzGamerTag,
     @JsonProperty("hz_player_name")
     String hzPlayerName,
+    @JsonProperty("privacy_flag")
+    @JsonDeserialize(using = YesNoBooleanDeserializer.class)
+    boolean privacyFlag,
     @JsonProperty("ret_msg")
     String msg
 ) {
