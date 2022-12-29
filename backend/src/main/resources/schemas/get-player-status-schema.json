@@ -32,6 +32,9 @@
           "null"
         ]
       },
+      "privacy_flag": {
+        "type": "string"
+      },
       "match_queue_id": {
         "type": "number",
         "minimum": 0
@@ -45,6 +48,7 @@
       "status_string",
       "status",
       "personal_status_message",
+      "privacy_flag",
       "match_queue_id",
       "Match",
       "ret_msg"
@@ -57,6 +61,7 @@
         "Match": 1200672860,
         "match_queue_id": 434,
         "personal_status_message": null,
+        "privacy_flag": "n",
         "ret_msg": null,
         "status": 3,
         "status_string": "In Game"
@@ -67,6 +72,7 @@
         "Match": 0,
         "match_queue_id": 0,
         "personal_status_message": "",
+        "privacy_flag": "n",
         "ret_msg": null,
         "status": 5,
         "status_string": "Unknown"
