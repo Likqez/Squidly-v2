@@ -1,8 +1,9 @@
-package dev.dotspace.squidly.response;
+package dev.dotspace.squidly.response.analysis;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.dotspace.squidly.response.AnalysisResult;
 
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
