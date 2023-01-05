@@ -4,7 +4,7 @@ import java.util.Optional;
 
 public final class AnalysisResult<T> {
 
-  public static final AnalysisResult INVALID = new AnalysisResult<>(null, "Internal error: hirez provided invalid information.", false);
+  public static final AnalysisResult SCHEMA_MISMATCH = new AnalysisResult<>(null, "Schema mismatch: Response contains unexpected information.", false);
   public static final AnalysisResult ERROR = new AnalysisResult<>(null, "internal error", false);
   private final T value;
   private final String msg;
