@@ -3,7 +3,7 @@ package dev.dotspace.squidly.session;
 //import com.google.gson.JsonParser;
 
 import dev.dotspace.squidly.request.RequestManager;
-import dev.dotspace.squidly.response.JsonResponseAnalyzer;
+import dev.dotspace.squidly.response.analysis.JsonResponseAnalyzer;
 import dev.dotspace.squidly.response.analysis.SessionResponseAnalyzer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

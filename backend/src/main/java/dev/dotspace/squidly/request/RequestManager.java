@@ -2,7 +2,7 @@ package dev.dotspace.squidly.request;
 
 import dev.dotspace.squidly.APIEndpoint;
 import dev.dotspace.squidly.response.AnalysisResult;
-import dev.dotspace.squidly.response.JsonResponseAnalyzer;
+import dev.dotspace.squidly.response.analysis.JsonResponseAnalyzer;
 import dev.dotspace.squidly.response.analysis.DataUsageResponseAnalyzer;
 import dev.dotspace.squidly.response.analysis.GetPlayerIdByNameResponseAnalyzer;
 import dev.dotspace.squidly.response.analysis.GetPlayerResponseAnalyzer;
