@@ -5,7 +5,6 @@ import com.networknt.schema.JsonSchema;
 import com.networknt.schema.JsonSchemaFactory;
 import com.networknt.schema.SpecVersion;
 import dev.dotspace.squidly.response.AnalysisResult;
-import dev.dotspace.squidly.response.JsonResponseAnalyzer;
 import dev.dotspace.squidly.session.SessionStore;
 
 import java.time.ZonedDateTime;
@@ -26,7 +25,7 @@ public class SessionResponseAnalyzer implements JsonResponseAnalyzer {
 
     if (!errors.isEmpty()) {
       System.err.printf("Could not validate against create-session schema: %s%n", jsonNode);
-      return AnalysisResult.INVALID;
+      return AnalysisResult.SCHEMA_MISMATCH;
     }
 
     var creationTime = ZonedDateTime.parse(jsonNode.get("timestamp").asText(), RESPONSE_TIME_FORMATTER);

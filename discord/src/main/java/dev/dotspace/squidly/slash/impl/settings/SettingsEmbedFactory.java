@@ -6,8 +6,8 @@ import dev.dotspace.squidly.util.StringUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.awt.*;
 
 public class SettingsEmbedFactory implements EmbedFactory<Object> { //TODO Change type

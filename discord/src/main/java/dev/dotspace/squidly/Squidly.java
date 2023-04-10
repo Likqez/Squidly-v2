@@ -22,7 +22,10 @@ public class Squidly {
             CacheFlag.VOICE_STATE,
             CacheFlag.ONLINE_STATUS,
             CacheFlag.ROLE_TAGS,
-            CacheFlag.EMOTE,
+            CacheFlag.STICKER,
+            CacheFlag.FORUM_TAGS,
+            CacheFlag.SCHEDULED_EVENTS,
+            CacheFlag.EMOJI,
             CacheFlag.ACTIVITY,
             CacheFlag.CLIENT_STATUS,
             CacheFlag.MEMBER_OVERRIDES)

@@ -34,9 +34,6 @@ public class SquildyBot {
       this.jda = jdaBuilder.build();
       this.jda.awaitReady();
       System.out.println("Squildy is ready for operation");
-    } catch (LoginException e) {
-      e.printStackTrace();
-      throw new RuntimeException("Could create JDA instance!");
     } catch (InterruptedException e) {
       e.printStackTrace();
     }

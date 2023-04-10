@@ -7,7 +7,6 @@ import com.networknt.schema.JsonSchema;
 import com.networknt.schema.JsonSchemaFactory;
 import com.networknt.schema.SpecVersion;
 import dev.dotspace.squidly.response.AnalysisResult;
-import dev.dotspace.squidly.response.JsonResponseAnalyzer;
 import dev.dotspace.squidly.response.model.DataUsageResponse;
 
 public class DataUsageResponseAnalyzer implements JsonResponseAnalyzer {
@@ -25,7 +24,7 @@ public class DataUsageResponseAnalyzer implements JsonResponseAnalyzer {
 
     if (!errors.isEmpty()) {
       System.err.printf("Could not validate against 'get-data-used' schema: %s%n", jsonNode);
-      return AnalysisResult.INVALID;
+      return AnalysisResult.SCHEMA_MISMATCH;
     }
 
     jsonNode = jsonNode.get(0);
