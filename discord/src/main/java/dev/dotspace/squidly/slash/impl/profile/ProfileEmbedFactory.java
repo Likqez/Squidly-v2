@@ -6,6 +6,7 @@ import dev.dotspace.squidly.util.EmbedFactory;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 
+import java.text.DecimalFormat;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -67,7 +68,7 @@ public class ProfileEmbedFactory implements EmbedFactory<GetPlayerResponse> {
     final double winAverage = (double) response.wins() / (totalGamesPlayed < 1 ? 1D : totalGamesPlayed);
     final int winAverageDisplay = (int) ((winAverage * 10000D) / 100);
 
-    final String timePlayed = "%dh and %02dm".formatted(response.minutesPlayed() / 60, response.minutesPlayed() % 60);
+    final String timePlayed = "%sh and %02dm".formatted(DecimalFormat.getNumberInstance().format(response.minutesPlayed() / 60), response.minutesPlayed() % 60);
 
     return """
         ```excel
@@ -106,7 +107,7 @@ public class ProfileEmbedFactory implements EmbedFactory<GetPlayerResponse> {
         ```excel
         identifier    = %d
         username      = %s
-        playerlevel   = %d (%d xp)
+        playerlevel   = %d (%s xp)
         achievements  = %d
                 
         created in    = %s (%sd ago)
@@ -119,10 +120,10 @@ public class ProfileEmbedFactory implements EmbedFactory<GetPlayerResponse> {
         response.activePlayerId(),
         playername,
         response.level(),
-        response.totalXP(),
+        DecimalFormat.getNumberInstance().format(response.totalXP()),
         response.totalAchievements(),
         DISPLAY_DATE_TIME_FORMATTER_SHORT.format(response.createdDateTime()),
-        existingDiff.toDays(),
+        DecimalFormat.getNumberInstance().format(existingDiff.toDays()),
         lastLoginDuration,
         response.platform(),
         response.region()
