@@ -18,7 +18,7 @@ public interface JsonResponseAnalyzer {
     var mapper = new ObjectMapper();
 
     try {
-      return mapper.readValue(s, JsonNode.class);
+      return mapper.readTree(s);
     } catch (JsonProcessingException e) {
       throw new RuntimeException(e);
     }
