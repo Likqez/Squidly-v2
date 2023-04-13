@@ -22,7 +22,7 @@ subprojects {
     ext {
         jetbrains_annotations = "24.0.0"
         discord_JDA = "5.0.0-beta.8"
-        jackson = "2.13.3"
+        jackson = "2.14.1"
         arango = "6.21.0"
         arango_velocypack = "3.0.1"
     }
