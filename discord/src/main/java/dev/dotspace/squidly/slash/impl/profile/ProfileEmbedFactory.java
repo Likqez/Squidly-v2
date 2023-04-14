@@ -7,13 +7,21 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
+import java.util.Locale;
 
 import static dev.dotspace.squidly.util.StringUtils.selectFirstNonNull;
 
 public class ProfileEmbedFactory implements EmbedFactory<GetPlayerResponse> {
+
+  private static final NumberFormat PERCENTAGE_FORMATTER = NumberFormat.getPercentInstance(Locale.ENGLISH);
+  static {
+    PERCENTAGE_FORMATTER.setMaximumIntegerDigits(2);
+    PERCENTAGE_FORMATTER.setMaximumFractionDigits(2);
+  }
 
   public MessageEmbed createEmbed(GetPlayerResponse response) {
     final String playername = selectFirstNonNull(response.hzPlayerName(), response.name(), response.hzGamerTag());
@@ -39,16 +47,14 @@ public class ProfileEmbedFactory implements EmbedFactory<GetPlayerResponse> {
 
   private String getRankedStats(RankedContainer rankedContainer) {
     final int gamesPlayed = rankedContainer.wins() + rankedContainer.losses() + rankedContainer.leaves();
-    final double winAverage = (double) rankedContainer.wins() / (gamesPlayed < 1 ? 1D : gamesPlayed);
-    final int winAverageDisplay = (int) ((winAverage * 10000D) / 100);
-
+    final double winAverage = ((double) rankedContainer.wins() / (gamesPlayed < 1 ? 1D : gamesPlayed)*100);
     return """
         ```excel
         %s (%02dTP)
                 
         played  = %d
         w/l     = %d/%d
-        win avg = %d%%
+        win avg = %s
         quits   = %d
         ```
         """.formatted(
@@ -57,7 +63,7 @@ public class ProfileEmbedFactory implements EmbedFactory<GetPlayerResponse> {
         gamesPlayed,
         rankedContainer.wins(),
         rankedContainer.losses(),
-        winAverageDisplay,
+        PERCENTAGE_FORMATTER.format(winAverage),
         rankedContainer.leaves()
     );
   }
@@ -66,7 +72,6 @@ public class ProfileEmbedFactory implements EmbedFactory<GetPlayerResponse> {
     //Leaves represents amount of quits in lobby phase. SHould be counted as loss.
     final int totalGamesPlayed = response.wins() + response.losses() + response.leaves();
     final double winAverage = (double) response.wins() / (totalGamesPlayed < 1 ? 1D : totalGamesPlayed);
-    final int winAverageDisplay = (int) ((winAverage * 10000D) / 100);
 
     final String timePlayed = "%sh and %02dm".formatted(DecimalFormat.getNumberInstance().format(response.minutesPlayed() / 60), response.minutesPlayed() % 60);
 
@@ -74,7 +79,7 @@ public class ProfileEmbedFactory implements EmbedFactory<GetPlayerResponse> {
         ```excel
         games played  = %d
         wins/losses   = %d/%d
-        win avg.      = %02d%%
+        win avg.      = %s
         quits         = %d
                 
         played for    = %s
@@ -83,7 +88,7 @@ public class ProfileEmbedFactory implements EmbedFactory<GetPlayerResponse> {
         totalGamesPlayed,
         response.wins(),
         response.losses(),
-        winAverageDisplay,
+        PERCENTAGE_FORMATTER.format(winAverage),
         response.leaves(),
         timePlayed
     );
