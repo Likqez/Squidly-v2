@@ -1,8 +1,8 @@
 package dev.dotspace.squidly.slash.impl.settings;
 
 import dev.dotspace.squidly.arango.DatabaseHandler;
-import dev.dotspace.squidly.arango.pojo.FavouritePlayerData;
-import dev.dotspace.squidly.arango.pojo.SquidlyUser;
+import dev.dotspace.squidly.user.FavouritePlayerData;
+import dev.dotspace.squidly.user.SquidlyUser;
 import dev.dotspace.squidly.request.RequestManager;
 import dev.dotspace.squidly.slash.AdvancedSlashCommand;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -42,56 +42,54 @@ public class SettingsSlashCommand extends AdvancedSlashCommand {
     super(COMMAND_DATA);
   }
 
-  public static void onExecute(@NotNull SlashCommandInteractionEvent event) {
-    var embedFactory = new SettingsEmbedFactory();
+  private static final SettingsEmbedFactory embedFactory = new SettingsEmbedFactory();
 
+  public static void onExecute(@NotNull SquidlyUser squidlyUser, @NotNull SlashCommandInteractionEvent event) {
     if (event.getSubcommandName() != null && event.getSubcommandGroup().equals("saves"))
       switch (event.getSubcommandName()) {
-        case "add" -> addSaved(event, embedFactory);
-        case "remove" -> removeSaved(event, embedFactory);
-        case "show" -> showSaves(event, embedFactory);
+        case "add" -> addSaved(squidlyUser,event);
+        case "remove" -> removeSaved(squidlyUser, event);
+        case "show" -> showSaves(squidlyUser, event);
       }
 
   }
 
-  private static void addSaved(SlashCommandInteractionEvent event, SettingsEmbedFactory embedFactory) {
+  private static void addSaved(SquidlyUser squidlyUser, SlashCommandInteractionEvent event) {
     event.deferReply(true).queue(interactionHook -> {
-      var inputName = event.getOption("player").getAsString();
-      var identifier = event.getOption("identifier") != null ? event.getOption("identifier").getAsString() : "me";
-      var userid = event.getUser().getId();
+        var inputName = event.getOption("player").getAsString();
+        var identifier = event.getOption("identifier") == null ? "me" : event.getOption("identifier").getAsString();
 
-      RequestManager.getPlayer(inputName)
-          .value()
-          .ifPresentOrElse(getPlayerRes -> {
-            var playername = selectFirstNonNull(getPlayerRes.hzPlayerName(), getPlayerRes.name(), getPlayerRes.hzGamerTag());
-            var response = DatabaseHandler.saveUser(new SquidlyUser(userid, List.of(new FavouritePlayerData(identifier, getPlayerRes.activePlayerId(), playername))), new FavouritePlayerData(identifier, getPlayerRes.activePlayerId(), playername));
-            interactionHook.editOriginalEmbeds(embedFactory.createSavedAddEmbed(response)).queue();
-          }, () -> interactionHook.editOriginalEmbeds(embedFactory.createNotFoundEmbed(event.getCommandString(), inputName)).queue());
+        if(squidlyUser.isFavouriteLimitReached()) {
+            interactionHook.editOriginalEmbeds(embedFactory.createFavouriteLimitReachedEmbed(event.getCommandString(),squidlyUser)).queue();
+            return;
+        }
+
+        RequestManager.getPlayerIdByName(inputName).value().ifPresentOrElse(
+                (response) -> {
+                    if (squidlyUser.addFavourite(identifier, response.playerId(), inputName)) {
+                        squidlyUser.update();
+                        interactionHook.editOriginalEmbeds(embedFactory.createSavedAddEmbed(squidlyUser)).queue();
+                    }else interactionHook.editOriginalEmbeds(embedFactory.createDuplicateIdentifierEmbed(event.getCommandString(), identifier, squidlyUser)).queue();
+                },
+                () -> interactionHook.editOriginalEmbeds(embedFactory.createNotFoundEmbed(event.getCommandString(),inputName)).queue()
+        );
     });
   }
 
-  private static void removeSaved(SlashCommandInteractionEvent event, SettingsEmbedFactory embedFactory) {
+  private static void removeSaved(SquidlyUser squidlyUser, SlashCommandInteractionEvent event) {
     event.deferReply(true).queue(interactionHook -> {
-      var identifier = event.getOption("save") != null ? event.getOption("save").getAsString() : "me";
-      var userid = event.getUser().getId();
+      var identifier = event.getOption("save") == null ? "me" : event.getOption("save").getAsString();
 
-      if (! identifier.equals("0") && ! identifier.equals("-1")) {
-        var result = DatabaseHandler.removeFavourite(new SquidlyUser(userid), identifier);
-        interactionHook.editOriginalEmbeds(embedFactory.createSavedRemoveEmbed(result)).queue();
-      } else
-        interactionHook.editOriginalEmbeds(embedFactory.createNotFoundEmbed(event.getCommandString(), identifier)).queue();
+        if (squidlyUser.removeFavourite(identifier)) {
+            squidlyUser.update();
+            interactionHook.editOriginalEmbeds(embedFactory.createSavedRemoveEmbed(squidlyUser)).queue();
+        } else interactionHook.editOriginalEmbeds(embedFactory.createNotFoundEmbed(event.getCommandString(), identifier)).queue();
     });
   }
 
-  private static void showSaves(SlashCommandInteractionEvent event, SettingsEmbedFactory embedFactory) {
-    event.deferReply(true).queue(interactionHook -> {
-      var userid = event.getUser().getId();
-      var response = DatabaseHandler.getUser(userid);
-      if (response == null)
-        interactionHook.editOriginal("Internal Error.").queue();
-      else
-        interactionHook.editOriginalEmbeds(embedFactory.createShowFavsEmbed(response, response.favourites().size() > 0)).queue();
-    });
+  private static void showSaves(SquidlyUser squidlyUser, SlashCommandInteractionEvent event) {
+    event.deferReply(true).queue(interactionHook ->
+        interactionHook.editOriginalEmbeds(embedFactory.createShowFavsEmbed(squidlyUser)).queue());
   }
 
 }

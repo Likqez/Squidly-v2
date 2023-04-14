@@ -2,6 +2,7 @@ package dev.dotspace.squidly.slash.impl.match;
 
 import dev.dotspace.squidly.arango.DatabaseHandler;
 import dev.dotspace.squidly.slash.BasicSlashCommand;
+import dev.dotspace.squidly.user.SquidlyUser;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
@@ -17,9 +18,9 @@ public class MatchSlashCommand extends BasicSlashCommand {
     this.addOption(new OptionData(OptionType.STRING, "player", "playername/gamertag or saved identifier", false));
   }
 
-  public static void onExecute(@NotNull SlashCommandInteractionEvent event) {
+  public static void onExecute(SquidlyUser squidlyUser, @NotNull SlashCommandInteractionEvent event) {
     var playername = event.getOption("player") == null ? "me" : event.getOption("player").getAsString();
-    var favPlayerId = DatabaseHandler.getFavourite(event.getUser().getId(), playername);
+    var favPlayerId = squidlyUser.getFavourite(playername);
 
     event.deferReply(true).queue(interactionHook -> interactionHook.editOriginal("test").queue());
   }

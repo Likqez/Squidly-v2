@@ -9,6 +9,7 @@ dependencies {
     implementation 'com.networknt:json-schema-validator:1.0.70'
     implementation "com.arangodb:arangodb-java-driver:${arango}"
     implementation "com.arangodb:jackson-dataformat-velocypack:${arango_velocypack}"
+    implementation 'org.cache2k:cache2k-core:2.6.1.Final'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'

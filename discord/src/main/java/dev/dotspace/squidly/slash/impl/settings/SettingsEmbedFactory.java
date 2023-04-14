@@ -1,6 +1,6 @@
 package dev.dotspace.squidly.slash.impl.settings;
 
-import dev.dotspace.squidly.arango.pojo.SquidlyUser;
+import dev.dotspace.squidly.user.SquidlyUser;
 import dev.dotspace.squidly.util.EmbedFactory;
 import dev.dotspace.squidly.util.StringUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -19,11 +19,11 @@ public class SettingsEmbedFactory implements EmbedFactory<Object> { //TODO Chang
 
   /* /settings saves add */
   public MessageEmbed createSavedAddEmbed(@NotNull SquidlyUser user) {
-    var success = ! user.favouriteLimitReached();
+    var success = ! user.isFavouriteLimitReached();
     return new EmbedBuilder()
-        .setColor(success ? Color.GREEN : Color.RED)
+        .setColor(Color.GREEN)
         .setTitle("/settings saves add")
-        .appendDescription(success ? "User successfully saved to favourites." : "User couldn't be saved to favourites.\nYou cannot save more than %d players".formatted(user.favouriteLimit()))
+        .appendDescription("User successfully saved to favourites.")
         .appendDescription("\n\n**Now saved favourites:**")
         .addField("#No.", formatFavsNo(user), true)
         .addField("Ident.", formatFavsIdent(user), true)
@@ -71,8 +71,8 @@ public class SettingsEmbedFactory implements EmbedFactory<Object> { //TODO Chang
 
   /* /setting save show */
 
-  public MessageEmbed createShowFavsEmbed(@NotNull SquidlyUser user, boolean hasFriends) {
-    if (hasFriends)
+  public MessageEmbed createShowFavsEmbed(@NotNull SquidlyUser user) {
+    if (user.hasFavourites())
       return new EmbedBuilder()
           .setColor(Color.GREEN)
           .setTitle("Your saved favourites:")
@@ -85,16 +85,42 @@ public class SettingsEmbedFactory implements EmbedFactory<Object> { //TODO Chang
         .setColor(Color.ORANGE)
         .setTitle("Your saved favourites:")
         .setImage(NO_FRIENDS_GIF)
-        .setDescription("```Seems like theres no one here :P```")
+        .setDescription("```Seems like no one's here :P```")
         .build();
   }
 
-  /* Player no found error */
+  /* Player not found error */
   public MessageEmbed createNotFoundEmbed(@NotNull String command, @NotNull String input) {
     return new EmbedBuilder()
         .setColor(Color.RED)
         .setTitle(command)
         .appendDescription("``%s`` could not be found. Please check for typos.".formatted(input))
         .build();
+  }
+
+  /* Saved Favourites limit reached error */
+  public MessageEmbed createFavouriteLimitReachedEmbed(@NotNull String command, @NotNull SquidlyUser user) {
+    return new EmbedBuilder()
+            .setColor(Color.RED)
+            .setTitle(command)
+            .appendDescription("User couldn't be saved to favourites.\nYou cannot save more than %d players.".formatted(user.favouriteLimit()))
+            .appendDescription("\n\n**Your saved favourites:**")
+            .addField("#No.", formatFavsNo(user), true)
+            .addField("Ident.", formatFavsIdent(user), true)
+            .addField("Username", formatFavsNames(user), true)
+            .build();
+  }
+
+  /* Trying to save with duplicate identifier error */
+  public MessageEmbed createDuplicateIdentifierEmbed(@NotNull String command, @NotNull String input, @NotNull SquidlyUser user) {
+    return new EmbedBuilder()
+            .setColor(Color.RED)
+            .setTitle(command)
+            .appendDescription("User couldn't be saved to favourites.\nIdentifier `%s` is already in use.`".formatted(input))
+            .appendDescription("\n\n**Your saved favourites:**")
+            .addField("#No.", formatFavsNo(user), true)
+            .addField("Ident.", formatFavsIdent(user), true)
+            .addField("Username", formatFavsNames(user), true)
+            .build();
   }
 }
