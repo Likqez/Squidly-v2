@@ -83,5 +83,13 @@ public record GetPlayerResponse(
     @JsonProperty("ret_msg")
     String msg
 ) {
+
+    @Override
+    public String avatarUrl() {
+        var env = System.getenv();
+        if(avatarUrl.startsWith("https://hirez-api.onrender.com/paladins/avatar/") && env.containsKey("squidly_avatar_proxy_url"))
+            return avatarUrl.replace("https://hirez-api.onrender.com",env.get("squidly_avatar_proxy_url")).concat(".gif");
+        return avatarUrl;
+    }
 }
 
