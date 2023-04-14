@@ -1,11 +1,10 @@
 package dev.dotspace.squidly.request;
 
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import dev.dotspace.squidly.APIEndpoint;
 import dev.dotspace.squidly.response.AnalysisResult;
 import dev.dotspace.squidly.response.analysis.JsonResponseAnalyzer;
-import dev.dotspace.squidly.response.analysis.DataUsageResponseAnalyzer;
-import dev.dotspace.squidly.response.analysis.GetPlayerIdByNameResponseAnalyzer;
-import dev.dotspace.squidly.response.analysis.GetPlayerResponseAnalyzer;
+import dev.dotspace.squidly.response.analysis.JsonResponseAnalyzerImpl;
 import dev.dotspace.squidly.response.analysis.GetPlayerStatusResponseAnalyzer;
 import dev.dotspace.squidly.response.model.DataUsageResponse;
 import dev.dotspace.squidly.response.model.GetPlayerIdByNameResponse;
@@ -50,6 +49,12 @@ public class RequestManager {
     var sessionStore = ss.get();
     var cmdSignature = SignatureFactory.getSignature(ss.getCredentialPair(), "getdataused");
 
+    final var responseAnalyser = new JsonResponseAnalyzerImpl.Builder<DataUsageResponse>()
+            .expectSingleObjectArray()
+            .schema("schemas/get-data-used-schema.json")
+            .type(DataUsageResponse.class)
+            .build();
+
     var response = new HttpRequestFactory(APIEndpoint.PALADINS)
         .addPath("getdatausedjson")
         .addPath(credentials.user())
@@ -61,7 +66,7 @@ public class RequestManager {
     try {
       return response.thenApplyAsync(HttpResponse::body)
           .thenApplyAsync(JsonResponseAnalyzer::toJsonNode)
-          .thenApplyAsync(new DataUsageResponseAnalyzer()::analyse)
+          .thenApplyAsync(responseAnalyser::analyse)
           .get();
 
     } catch (InterruptedException | ExecutionException e) {
@@ -77,6 +82,17 @@ public class RequestManager {
     var sessionStore = ss.get();
     var cmdSignature = SignatureFactory.getSignature(ss.getCredentialPair(), "getplayeridbyname");
 
+    final var responseAnalyser = new JsonResponseAnalyzerImpl.Builder<GetPlayerIdByNameResponse>()
+            .expectSingleObjectArray()
+            .schema("schemas/get-player-id-by-name-schema.json")
+            .type(GetPlayerIdByNameResponse.class)
+            .customFail(jsonNode -> {
+              if(jsonNode.size() == 0)
+                return new AnalysisResult<>(null,"No player found!");
+              return AnalysisResult.SUCCESS;
+            })
+            .build();
+
     var response = new HttpRequestFactory(APIEndpoint.PALADINS)
         .addPath("getplayeridbynamejson")
         .addPath(credentials.user())
@@ -89,7 +105,7 @@ public class RequestManager {
     try {
       return response.thenApplyAsync(HttpResponse::body)
           .thenApplyAsync(JsonResponseAnalyzer::toJsonNode)
-          .thenApplyAsync(new GetPlayerIdByNameResponseAnalyzer()::analyse)
+          .thenApplyAsync(responseAnalyser::analyse)
           .get();
     } catch (InterruptedException | ExecutionException e) {
       e.printStackTrace();
@@ -104,6 +120,18 @@ public class RequestManager {
     var sessionStore = ss.get();
     var cmdSignature = SignatureFactory.getSignature(ss.getCredentialPair(), "getplayer");
 
+    final var responseAnalyser = new JsonResponseAnalyzerImpl.Builder<GetPlayerResponse>()
+            .expectSingleObjectArray()
+            .schema("schemas/get-player-schema.json")
+            .type(GetPlayerResponse.class)
+            .customFail(jsonNode -> {
+              if(jsonNode.size() == 0)
+                return new AnalysisResult<>(null,"No player found!");
+              return AnalysisResult.SUCCESS;
+            })
+            .jacksonModule(new JavaTimeModule())
+            .build();
+
     var response = new HttpRequestFactory(APIEndpoint.PALADINS)
         .addPath("getplayerjson")
         .addPath(credentials.user())
@@ -116,34 +144,7 @@ public class RequestManager {
     try {
       return response.thenApplyAsync(HttpResponse::body)
           .thenApplyAsync(JsonResponseAnalyzer::toJsonNode)
-          .thenApplyAsync(new GetPlayerResponseAnalyzer()::analyse)
-          .get();
-    } catch (InterruptedException | ExecutionException e) {
-      e.printStackTrace();
-    }
-
-    return AnalysisResult.ERROR;
-  }
-
-  public static AnalysisResult<GetPlayerStatusResponse> getPlayerStatus(int playerId) {
-    var ss = new SessionSupplier();
-    var credentials = ss.getCredentialPair();
-    var sessionStore = ss.get();
-    var cmdSignature = SignatureFactory.getSignature(ss.getCredentialPair(), "getplayerstatus");
-
-    var response = new HttpRequestFactory(APIEndpoint.PALADINS)
-        .addPath("getplayerstatusjson")
-        .addPath(credentials.user())
-        .addPath(cmdSignature)
-        .addPath(sessionStore.session())
-        .addPath(SignatureFactory.getTimestamp())
-        .addPath(playerId)
-        .asyncGET();
-
-    try {
-      return response.thenApplyAsync(HttpResponse::body)
-          .thenApplyAsync(JsonResponseAnalyzer::toJsonNode)
-          .thenApplyAsync(new GetPlayerStatusResponseAnalyzer()::analyse)
+          .thenApplyAsync(responseAnalyser::analyse)
           .get();
     } catch (InterruptedException | ExecutionException e) {
       e.printStackTrace();
