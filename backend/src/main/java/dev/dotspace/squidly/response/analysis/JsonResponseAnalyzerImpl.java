@@ -11,6 +11,7 @@ import dev.dotspace.squidly.response.AnalysisResult;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Function;
 
 public class JsonResponseAnalyzerImpl<T> implements JsonResponseAnalyzer {
 
@@ -18,6 +19,8 @@ public class JsonResponseAnalyzerImpl<T> implements JsonResponseAnalyzer {
     private final JsonSchema schema;
     private final ObjectMapper objectMapper;
     private final boolean allowEmptyResponse, expectArray, expectObject, expectSingleObjectArray;
+
+    private Function<JsonNode, AnalysisResult<T>> failureHandler;
 
     private JsonResponseAnalyzerImpl(String schema, VersionFlag specVersion, Class<T> tClass) {
         JsonSchemaFactory factory = JsonSchemaFactory.getInstance(specVersion);
@@ -30,7 +33,7 @@ public class JsonResponseAnalyzerImpl<T> implements JsonResponseAnalyzer {
         this.allowEmptyResponse = false;
     }
 
-    private JsonResponseAnalyzerImpl(JsonSchema schema, boolean allowEmptyResponse, ObjectMapper mapper, boolean expectObject, boolean expectArray, boolean expectSingleObjectArray, Class<T> tClass) {
+    private JsonResponseAnalyzerImpl(JsonSchema schema, boolean allowEmptyResponse, ObjectMapper mapper, boolean expectObject, boolean expectArray, boolean expectSingleObjectArray, Class<T> tClass, Function<JsonNode, AnalysisResult<T>> failureHandler) {
         this.schema = schema;
         this.allowEmptyResponse = allowEmptyResponse;
         this.objectMapper = mapper;
@@ -38,6 +41,7 @@ public class JsonResponseAnalyzerImpl<T> implements JsonResponseAnalyzer {
         this.expectArray = expectArray;
         this.expectSingleObjectArray = expectSingleObjectArray;
         this.tClass = tClass;
+        this.failureHandler = failureHandler;
     }
 
     @Override
@@ -57,6 +61,12 @@ public class JsonResponseAnalyzerImpl<T> implements JsonResponseAnalyzer {
         if (expectObject && jsonNode.isArray())
             return AnalysisResult.ERROR;
 
+        if (this.failureHandler != null) {
+            var result = failureHandler.apply(jsonNode);
+            if (!result.success())
+                return result;
+        }
+
         if (expectArray && jsonNode.size() < 1)
             return AnalysisResult.ERROR;
 
@@ -75,8 +85,7 @@ public class JsonResponseAnalyzerImpl<T> implements JsonResponseAnalyzer {
         try {
             return new AnalysisResult<>(
                     objectMapper.treeToValue(jsonNode, tClass),
-                    ret_msg,
-                    true
+                    ret_msg
             );
         } catch (JsonProcessingException ex) {
             ex.printStackTrace();
@@ -95,6 +104,8 @@ public class JsonResponseAnalyzerImpl<T> implements JsonResponseAnalyzer {
         private boolean expectArray;
         private boolean expectObject;
         private boolean expectSingleObjectArray;
+
+        private Function<JsonNode, AnalysisResult<T>> failureHandler;
 
         public Builder() {
             this.jacksonModules = new HashSet<>();
@@ -146,8 +157,14 @@ public class JsonResponseAnalyzerImpl<T> implements JsonResponseAnalyzer {
 
         public Builder<T> expectSingleObjectArray() {
             this.expectSingleObjectArray = true;
-            this.expectObject = true;
+            this.expectObject = false;
             this.expectArray = false;
+            return this;
+        }
+
+        public Builder<T> customFail(Function<JsonNode, AnalysisResult<T>> failureHandler) {
+            if (failureHandler != null)
+                this.failureHandler = failureHandler;
             return this;
         }
 
@@ -159,7 +176,7 @@ public class JsonResponseAnalyzerImpl<T> implements JsonResponseAnalyzer {
 
             var mapper = new ObjectMapper().registerModules(this.jacksonModules);
 
-            return new JsonResponseAnalyzerImpl<T>(this.schema, this.allowEmptyResponse, mapper, this.expectObject, this.expectArray, this.expectSingleObjectArray, returnTypeClass);
+            return new JsonResponseAnalyzerImpl<T>(this.schema, this.allowEmptyResponse, mapper, this.expectObject, this.expectArray, this.expectSingleObjectArray, this.returnTypeClass, this.failureHandler);
         }
     }
 
