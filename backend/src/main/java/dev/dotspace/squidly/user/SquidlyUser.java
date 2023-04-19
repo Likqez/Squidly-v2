@@ -66,7 +66,7 @@ public record SquidlyUser(
       if(this.isFavouriteLimitReached()) return false;
 
       var favouriteData = new FavouritePlayerData(identifier,playerId,playerName);
-      if(this.favourites.contains(favouriteData)) return false;// TODO FIX
+      if(this.favourites.stream().anyMatch(data->data.identifier().equals(identifier))) return false;
 
       return this.favourites.add(favouriteData);
   }
