@@ -1,7 +1,5 @@
 package dev.dotspace.squidly.slash.impl.settings;
 
-import dev.dotspace.squidly.arango.DatabaseHandler;
-import dev.dotspace.squidly.user.FavouritePlayerData;
 import dev.dotspace.squidly.user.SquidlyUser;
 import dev.dotspace.squidly.request.RequestManager;
 import dev.dotspace.squidly.slash.AdvancedSlashCommand;
@@ -9,43 +7,35 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
-import net.dv8tion.jda.api.interactions.commands.build.SubcommandGroupData;
 import net.dv8tion.jda.internal.interactions.CommandDataImpl;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+public class SavesSlashCommand extends AdvancedSlashCommand {
 
-import static dev.dotspace.squidly.util.StringUtils.selectFirstNonNull;
-
-public class SettingsSlashCommand extends AdvancedSlashCommand {
-
-  public static final String NAME = "settings";
-  public static final String DESC = "squidly user settings";
+  public static final String NAME = "saves";
+  public static final String DESC = "Saved player menu";
 
   private static final SlashCommandData COMMAND_DATA = new CommandDataImpl(NAME, DESC)
-      .addSubcommandGroups(
-          new SubcommandGroupData("saves", "Saved player menu")
-              .addSubcommands(
-                  new SubcommandData("show", "Display all saved favourites"),
-                  new SubcommandData("add", "Add player to saved favourites")
+      .addSubcommands(
+              new SubcommandData("show", "Display all saved accounts"),
+              new SubcommandData("add", "Add player to saved accounts")
                       .addOption(OptionType.STRING, "player", "playername / gamertag", true)
-                      .addOption(OptionType.STRING, "identifier", "symbol/emoji to identify user"),
-                  new SubcommandData("remove", "Remove player from saved favourites")
+                      .addOption(OptionType.STRING, "identifier", "symbol/emoji to identify account"),
+              new SubcommandData("remove", "Remove player from saved accounts")
                       .addOption(OptionType.STRING, "save", "No. of saved identifier/identifier", true)
-              )
       )
       .addSubcommands(
-          new SubcommandData("hidden", "Toggle auto privacy mode")
+
       );
 
-  public SettingsSlashCommand() {
+  public SavesSlashCommand() {
     super(COMMAND_DATA);
   }
 
-  private static final SettingsEmbedFactory embedFactory = new SettingsEmbedFactory();
+  private static final SavesEmbedFactory embedFactory = new SavesEmbedFactory();
 
   public static void onExecute(@NotNull SquidlyUser squidlyUser, @NotNull SlashCommandInteractionEvent event) {
-    if (event.getSubcommandName() != null && event.getSubcommandGroup().equals("saves"))
+    if (event.getSubcommandName() != null)
       switch (event.getSubcommandName()) {
         case "add" -> addSaved(squidlyUser,event);
         case "remove" -> removeSaved(squidlyUser, event);

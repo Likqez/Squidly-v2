@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 
-public class SettingsEmbedFactory implements EmbedFactory<Object> { //TODO Change type
+public class SavesEmbedFactory implements EmbedFactory<Object> { //TODO Change type
 
   @Override
   public MessageEmbed createEmbed(Object data) {
