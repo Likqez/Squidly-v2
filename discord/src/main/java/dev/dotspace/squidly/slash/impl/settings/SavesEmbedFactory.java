@@ -55,21 +55,28 @@ public class SavesEmbedFactory implements EmbedFactory<Object> { //TODO Change t
     return stringBuilder.toString();
   }
 
-  /* /setting save remove */
+  /* /saves remove */
 
   public MessageEmbed createSavedRemoveEmbed(@NotNull SquidlyUser user) {
+    if(user.hasFavourites())
+        return new EmbedBuilder()
+            .setColor(Color.GREEN)
+            .setTitle("/settings saves remove")
+            .appendDescription("Favourites successfully updated.")
+            .appendDescription("\n\n**Now saved favourites:**")
+            .addField("#No.", formatFavsNo(user), true)
+            .addField("Ident.", formatFavsIdent(user), true)
+            .addField("Username", formatFavsNames(user), true)
+            .build();
     return new EmbedBuilder()
-        .setColor(Color.GREEN)
-        .setTitle("/settings saves remove")
-        .appendDescription("Favourites successfully updated.")
-        .appendDescription("\n\n**Now saved favourites:**")
-        .addField("#No.", formatFavsNo(user), true)
-        .addField("Ident.", formatFavsIdent(user), true)
-        .addField("Username", formatFavsNames(user), true)
-        .build();
+            .setColor(Color.ORANGE)
+            .setTitle("Your saved favourites:")
+            .setImage(NO_FRIENDS_GIF)
+            .setDescription("```Seems like no one's here :P```")
+            .build();
   }
 
-  /* /setting save show */
+  /* /saves show */
 
   public MessageEmbed createShowFavsEmbed(@NotNull SquidlyUser user) {
     if (user.hasFavourites())
@@ -116,7 +123,7 @@ public class SavesEmbedFactory implements EmbedFactory<Object> { //TODO Change t
     return new EmbedBuilder()
             .setColor(Color.RED)
             .setTitle(command)
-            .appendDescription("User couldn't be saved to favourites.\nIdentifier `%s` is already in use.`".formatted(input))
+            .appendDescription("User couldn't be saved to favourites.\nIdentifier `%s` is already in use.".formatted(input))
             .appendDescription("\n\n**Your saved favourites:**")
             .addField("#No.", formatFavsNo(user), true)
             .addField("Ident.", formatFavsIdent(user), true)
