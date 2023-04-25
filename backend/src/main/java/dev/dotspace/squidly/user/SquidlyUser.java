@@ -10,14 +10,15 @@ import java.util.Optional;
 public record SquidlyUser(
     @JsonProperty("_key") String userid,
     @JsonProperty("favourite_players") List<FavouritePlayerData> favourites,
-    @JsonProperty("favourite_limit") int favouriteLimit
+    @JsonProperty("favourite_limit") int favouriteLimit,
+    @JsonProperty("privacy_mode") boolean privacyMode
 ) {
   public SquidlyUser(String userid, List<FavouritePlayerData> favourites) {
-    this(userid, favourites,5);
+    this(userid, favourites,5, false);
   }
 
   public SquidlyUser(String userid) {
-    this(userid, Collections.emptyList(), 5);
+    this(userid, Collections.emptyList(), 5, false);
   }
 
   public boolean isFavouriteLimitReached() {

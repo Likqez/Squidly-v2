@@ -1,12 +1,10 @@
 package dev.dotspace.squidly.slash.impl.profile;
 
-import dev.dotspace.squidly.arango.DatabaseHandler;
 import dev.dotspace.squidly.request.RequestManager;
 import dev.dotspace.squidly.response.model.GetPlayerResponse;
 import dev.dotspace.squidly.slash.BasicSlashCommand;
 import dev.dotspace.squidly.user.FavouritePlayerData;
 import dev.dotspace.squidly.user.SquidlyUser;
-import dev.dotspace.squidly.user.SquidlyUserSupplier;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
@@ -29,13 +27,13 @@ public class ProfileSlashCommand extends BasicSlashCommand {
     RequestManager.getPlayer(favPlayer.orElse(playername))
             .value()
             .ifPresentOrElse(
-                    (response) -> sendProfileEmbed(response, event),
+                    (response) -> sendProfileEmbed(response, squidlyUser, event),
                     () -> event.reply("error").queue()
             );
   }
 
-  private static void sendProfileEmbed(GetPlayerResponse response, SlashCommandInteractionEvent event) {
-    event.deferReply().queue(interactionHook -> {
+  private static void sendProfileEmbed(GetPlayerResponse response, SquidlyUser squidlyUser, SlashCommandInteractionEvent event) {
+    event.deferReply(squidlyUser.privacyMode()).queue(interactionHook -> {
       var embed = new ProfileEmbedFactory().createEmbed(response);
       interactionHook.editOriginalEmbeds(embed).queue();
     });
